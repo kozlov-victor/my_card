@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, minimal-ui, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta charset="UTF-8">
+    <link rel="icon" href="/favicon.png" type="image/png">
+    <title>my_card</title>
+    <style>
+
+        :root {
+            --theme-color: #b8baff;
+            --bg-color: #e9ebfb;
+            --bg-color-light: #fafafd;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            border: none;
+            font-family: Arial sans-serif;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            display: block;
+            height: 100%;
+        }
+
+        body {
+            background-color: var(--bg-color);
+        }
+
+        main {
+            background-color: var(--bg-color);
+            margin: 0 auto;
+            width: 90vw;
+            max-width: 1200px;
+            height: 100%;
+            padding: 5px;
+        }
+
+        label {
+            cursor: pointer;
+        }
+
+        hr {
+            height: 1px;
+            margin: 5px;
+            background-color: var(--bg-color-light);
+        }
+
+        textarea {
+            padding: 2px;
+            display: block;
+            width: 100%;
+            min-width: 100%;
+            height: 100px;
+            border: 1px solid grey;
+        }
+
+        button, a.button-like {
+            display: inline-block;
+            border: 1px solid var(--theme-color);
+            padding: 5px;
+            margin: 5px;
+            cursor: pointer;
+            color: black;
+        }
+
+        a.button-like {
+            text-decoration: none;
+        }
+
+        a.button-like:active, a.button-like:visited {
+            color: black;
+        }
+
+        input, select, textarea.input {
+            width: 100%;
+            display: block;
+            outline: none;
+            border: 1px solid grey;
+            height: 24px;
+        }
+
+        textarea.input {
+            min-height: 24px;
+        }
+
+        input[type=checkbox] {
+            display: inline-block;
+            width: 15px;
+            height: 15px;
+            cursor: pointer;
+            vertical-align: middle;
+            margin-left: 10px;
+        }
+
+        .title {
+            padding: 5px;
+            margin: 5px 0;
+            background-color: var(--theme-color);
+            color: white;
+            font-weight: bold;
+        }
+
+        section {
+            padding: 5px;
+            margin: 5px;
+            background-color: var(--bg-color-light);
+            border-radius: 5px;
+        }
+
+        .item {
+            width: 300px;
+            padding: 10px 5px;
+            display: inline-block;
+            vertical-align: top;
+        }
+
+        .item.textArea {
+            display: block;
+            width: 100%;
+        }
+
+        .tip-button {
+            padding: 2px;
+            margin: 2px;
+            font-size: 12px;
+        }
+
+        h4 {
+            padding: 5px;
+        }
+
+        /**
+        dialog
+         */
+        .modal-wrap-outer {
+            display: table;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            right: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            @media screen and (max-height: 400px) {
+                margin-top: 20px;
+            }
+        }
+
+        .modal-wrap-inner {
+            display: table-cell;
+            vertical-align: middle;
+            height: 100%;
+        }
+
+        .dialog {
+            width: 600px;
+            @media screen and (max-width: 600px) {
+                width: 90vw;
+            }
+            max-height: 90vh;
+            overflow-y: auto;
+            margin: 0 auto;
+            text-align: center;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 2px 2px 2px black;
+            &.transparent {
+                background-color: initial;
+                box-shadow: none;
+            }
+        }
+
+        .overlay {
+            position: fixed;
+            z-index: 1000;
+            left:0;
+            right: 0;
+            top:0;
+            bottom: 0;
+            background-color: black;
+            opacity: 0.6;
+        }
+
+        .dialog-head {
+            position: sticky;
+            z-index: 1000;
+            top: 0;
+            padding: 10px;
+            text-align: right;
+            background-color: var(--theme-color);
+            border-bottom: 1px solid #767676;
+            color: white;
+            cursor: pointer;
+            font-size: 21px;
+        }
+
+        .dialog-body {
+            padding: 5px;
+            min-height: 50px;
+        }
+
+        .dialog-close {
+            display: inline-block;
+            padding: 1px;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            text-align: center;
+            &:hover {
+                background-color: var(--bg-color);
+            }
+        }
+
+        /**
+        list
+         */
+        li {
+            padding: 10px;
+            text-align: left;
+            cursor: pointer;
+        }
+        li:hover {
+            background-color: var(--bg-color-light);
+        }
+
+    </style>
+</head>
+<body>
+<script src="/index.js?${build_no}"></script>
+</body>
+</html>
