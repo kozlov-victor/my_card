@@ -6,6 +6,18 @@ export interface ItemBase<T> {
     customValue?:string;
 }
 
+export interface SelectItem {
+    value?:'other'|string;
+    text?:string;
+    isDefault?:true;
+}
+
+export interface SelectItem2 {
+    value:'other'|string;
+    text?:string;
+    isDefault?:true;
+}
+
 export interface TextAreaItem extends ItemBase<string> {
     type: 'textArea';
 }
@@ -31,7 +43,15 @@ export interface CheckBoxItem extends ItemBase<boolean> {
 
 export interface DropDownItem extends ItemBase<string> {
     type: 'dropDown';
-    values: ({value:'other'|string,text?:string,isDefault?:true})[];
+    values: SelectItem[];
+}
+
+export interface ComboSelectItem extends ItemBase<string> {
+    type: 'comboSelect';
+    radioGroups?:SelectItem2[][];
+    checks?:SelectItem2[];
+    values?:(string|undefined)[];
+    customValue?:string;
 }
 
 export interface Block {
@@ -39,7 +59,8 @@ export interface Block {
     items: (
         TextAreaItem|TextInputItem|
         DateInputItem|CheckBoxTextItem|
-        CheckBoxItem|DropDownItem
+        CheckBoxItem|DropDownItem|
+        ComboSelectItem
         )[];
 }
 

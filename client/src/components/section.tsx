@@ -1,7 +1,7 @@
 import {IBaseProps} from "@engine/renderable/tsx/_genetic/virtualNode";
 import {
     CheckBoxItem,
-    CheckBoxTextItem,
+    CheckBoxTextItem, ComboSelectItem,
     DropDownItem,
     ItemBase,
     Section,
@@ -13,7 +13,7 @@ import {
     CheckBoxComponent,
     CheckBoxPrintComponent,
     CheckBoxTextComponent,
-    CheckBoxTextPrintComponent,
+    CheckBoxTextPrintComponent, ComboSelectComponent, CompoSelectPrintComponent,
     DropDownComponent,
     DropDownPrintComponent,
     TextAreaComponent,
@@ -31,6 +31,7 @@ const getComponentItemByType = (section:Section,item:ItemBase<any>,trackBy:strin
         case 'checkBoxText': return <CheckBoxTextComponent trackBy={trackBy} item={item as CheckBoxTextItem}/>
         case 'checkBox': return <CheckBoxComponent trackBy={trackBy} item={item as CheckBoxItem}/>
         case 'dropDown': return <DropDownComponent trackBy={trackBy} item={item as DropDownItem}/>
+        case 'comboSelect': return <ComboSelectComponent trackBy={trackBy} item={item as ComboSelectItem}/>
         default: throw new Error(`wrong item type: ${item.type}`);
     }
 }
@@ -42,6 +43,7 @@ const getPrintComponentItemByType = (section:Section,item:ItemBase<any>)=>{
         case 'checkBoxText': return <CheckBoxTextPrintComponent  item={item as CheckBoxTextItem}/>
         case 'checkBox': return <CheckBoxPrintComponent item={item as CheckBoxItem}/>
         case 'dropDown': return <DropDownPrintComponent item={item as DropDownItem}/>
+        case 'comboSelect': return <CompoSelectPrintComponent item={item as ComboSelectItem}/>
         default: throw new Error(`wrong item type: ${item.type}`);
     }
 }

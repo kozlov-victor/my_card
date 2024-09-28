@@ -103,7 +103,7 @@ export class DomElementCreator extends AbstractElementCreator<HTMLElementWrap>{
                     }
 
                     if (ELEMENT_PROPERTIES.indexOf(key)>-1) { // property
-                        (htmlEl as any)[key] = props[key];
+                        (htmlEl as any)[key] = props[key] ?? '';
                     } else { // attribute
                         const value = props[key];
                         if (value===null || value===undefined) htmlEl.removeAttribute(attrName);

@@ -81,6 +81,7 @@
             outline: none;
             border: 1px solid grey;
             height: 24px;
+            padding: 1px;
         }
 
         textarea.input {
@@ -94,6 +95,16 @@
             cursor: pointer;
             vertical-align: middle;
             margin-left: 10px;
+        }
+
+        input[type=radio] {
+            outline: none;
+            border: 1px solid grey;
+            display: inline-block;
+            vertical-align: middle;
+            width: auto;
+            height: 20px;
+            margin: 6px;
         }
 
         .title {
@@ -219,12 +230,35 @@
         list
          */
         li {
+            list-style-type: none;
             padding: 10px;
             text-align: left;
             cursor: pointer;
         }
         li:hover {
             background-color: var(--bg-color-light);
+        }
+
+        /**
+        popup
+         */
+        .popup-wrap {
+            position: relative;
+        }
+        .pop-back {
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+        }
+        .popup {
+            position: absolute;
+            left: 0;
+            right: 0;
+            border: 1px solid #cfcfcf;
+            background-color: white;
+            box-shadow: 1px 1px 1px #cdcdcd;
         }
 
     </style>

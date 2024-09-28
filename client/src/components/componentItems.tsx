@@ -2,10 +2,10 @@ import {
     CheckBoxItem,
     CheckBoxTextItem,
     DropDownItem,
-    ItemBase,
+    ItemBase, ComboSelectItem,
     Section,
     TextAreaItem,
-    TextInputItem
+    TextInputItem, SelectItem2
 } from "../model/model";
 import {IBaseProps} from "@engine/renderable/tsx/_genetic/virtualNode";
 import {VEngineTsxFactory} from "@engine/renderable/tsx/_genetic/vEngineTsxFactory.h";
@@ -154,6 +154,9 @@ export class DropDownComponent extends AbstractInputBase {
 
     constructor(private props: IBaseProps & { item: DropDownItem }) {
         super();
+        if (props.item.value===undefined) {
+            props.item.value = props.item.values.find(it=>it.isDefault)?.value;
+        }
     }
 
     @Reactive.Method()
@@ -163,9 +166,6 @@ export class DropDownComponent extends AbstractInputBase {
 
     render(): JSX.Element {
         const props = this.props;
-        if (props.item.value===undefined) {
-            props.item.value = props.item.values.find(it=>it.isDefault)?.value;
-        }
         return (
             <>
                 <div>{getTitle(this.props.item)}</div>
@@ -175,7 +175,7 @@ export class DropDownComponent extends AbstractInputBase {
                     {props.item.values.map(option =>
                         <option
                             value={option.value}
-                            selected={option.isDefault || props.item.value === option.value}>{option.text ?? option.value}</option>
+                            selected={props.item.value === option.value}>{option.text ?? option.value}</option>
                     )}
                 </select>
                 {
@@ -216,9 +216,6 @@ export class CheckBoxTextComponent extends AbstractInputBase {
 
     @Reactive.Method()
     protected override setValue(item: CheckBoxTextItem, value: boolean) {
-        if (!value) {
-            item.customValue = undefined;
-        }
         item.value = value;
     }
 
@@ -246,15 +243,15 @@ export class CheckBoxTextComponent extends AbstractInputBase {
 export const CheckBoxTextPrintComponent = (props: IBaseProps & {item:CheckBoxTextItem})=>{
     if (!props.item.value) return <></>;
     else return (
-        <div className={'item'}>
+        <>
             {getTitle(props.item)}
             {
                 props.item.customValue ?
                     <>
-                        {`: ${removeTailDot(props.item.customValue)}. `}
+                        {`: ${deCapitalize(removeTailDot(props.item.customValue))}. `}
                     </>:'. '
             }
-        </div>
+        </>
     );
 }
 
@@ -297,6 +294,146 @@ export const CheckBoxPrintComponent = (props: IBaseProps & {item:CheckBoxItem})=
     else return (
         <>
             {`${getTitle(props.item)}. `}
+        </>
+    );
+}
+
+export class ComboSelectComponent extends AbstractInputBase {
+
+    @Reactive.Property()
+    private opened = false;
+
+    constructor(private props: IBaseProps & { item: ComboSelectItem }) {
+        super();
+        const item = this.props.item;
+        if (!item.values) {
+            item.values = [];
+            if (item.radioGroups) {
+                for (const group of item.radioGroups) {
+                    item.values.push(group.find(it=>it.isDefault)?.value);
+                }
+            }
+            if (item.checks) {
+                for (const check of item.checks) {
+                    item.values.push(check.isDefault?check.value:undefined);
+                }
+            }
+
+        }
+    }
+
+    @Reactive.Method()
+    private setRadioValue(groupIndex:number, value: string) {
+        this.props.item.values![groupIndex] = value;
+    }
+
+    @Reactive.Method()
+    private setCheckValue(checkIndex:number, value: string, checked:boolean) {
+        const groupsNum = this.props.item.radioGroups?
+            this.props.item.radioGroups.length:0;
+        this.props.item.values![groupsNum + checkIndex] =
+            checked? value: undefined;
+    }
+
+    @Reactive.Method()
+    private setCustomValue(value: string) {
+        this.props.item.customValue = value;
+    }
+
+    private getPreview() {
+        const item = this.props.item;
+        const preview = item.values!.filter(it=>it!==undefined && it!=='other');
+        if (item.values!.includes('other') && item.customValue) {
+            preview.push(item.customValue);
+        }
+        return preview.join(', ');
+    }
+
+    render(): JSX.Element {
+        const item = this.props.item;
+        return (
+            <>
+                <div>
+                    {getTitle(this.props.item)}
+                    <input
+                        value={this.getPreview()}
+                        onclick={_=>this.opened = true} readOnly={true}/>
+                </div>
+                <div className={'popup-wrap'}>
+                    {
+                        this.opened &&
+                        <>
+                            <div onclick={_=>this.opened = false} className={'pop-back'}></div>
+                            <div className={'popup'}>
+                                {
+                                    item.radioGroups &&
+                                    item.radioGroups.map((group, i) =>
+                                    <ul style={{borderBottom:'1px solid gray',marginBottom: '5px'}}>
+                                        {
+                                            group.map((selectItem,j) =>
+                                                <li style={{padding:'0'}}>
+                                                    <label
+                                                        style={{display:'block'}}
+                                                        htmlFor={`radio_id_${i}_${j}`}>
+                                                        <input
+                                                            onchange={_ => this.setRadioValue(i,selectItem.value)}
+                                                            value={selectItem.value}
+                                                            checked={item.values?.includes(selectItem.value)}
+                                                            type={'radio'} name={`name_${i}`} id={`radio_id_${i}_${j}`}/>
+                                                        <span>{selectItem.value}</span>
+                                                    </label>
+                                                </li>
+                                            )
+                                        }
+                                    </ul>
+                                )}
+                                {
+                                    item.checks &&
+                                        <ul>
+                                            {item.checks.map((check, i) =>
+                                                <li style={{padding: '0'}}>
+                                                    <label
+                                                        style={{display: 'block'}}
+                                                        htmlFor={`check_id_${i}`}>
+                                                        <input
+                                                            style={{margin:'5px'}}
+                                                            onchange={e=>this.setCheckValue(i,check.value,(e.target as HTMLInputElement).checked)}
+                                                            value={check.value}
+                                                            checked={item.values?.includes(check.value)}
+                                                            type={'checkbox'} id={`check_id_${i}`}/>
+                                                        <span>{check.text ?? check.value}</span>
+                                                    </label>
+                                                </li>
+                                            )}
+                                        </ul>
+                                }
+                                {
+                                    item.values?.includes('other') &&
+                                    <textarea className={'input'} value={item.customValue}
+                                        onchange={e => this.setCustomValue((e.target as HTMLTextAreaElement).value)}/>
+                                }
+                            </div>
+                        </>
+                    }
+                </div>
+            </>
+        );
+    }
+
+
+}
+
+export const CompoSelectPrintComponent = (props: IBaseProps & {item:ComboSelectItem})=>{
+    const item = props.item;
+    const values = item.values!.filter(it=>it!==undefined && it!=='other');
+    if (item.values!.includes('other') && item.customValue) {
+        values.push(item.customValue);
+    }
+    if (!values.length) return <></>;
+    const joined = values.join(', ');
+    return (
+        <>
+            {`${getTitle(props.item)}: ${joined}. `}
         </>
     );
 }

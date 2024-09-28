@@ -16,7 +16,7 @@ const mainForm:Section[] = [
             {
                 items: [
                     {
-                        title: 'Прізвище',
+                        title: 'Прізвище', // todo
                         type: 'textInput',
                     },
                     {
@@ -282,18 +282,16 @@ const mainForm:Section[] = [
                     },
                     {
                         title: 'Лімфатичні вузли',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'не збільшені', isDefault: true},
-                            {value: 'збільшені', text: 'інше'},
-                        ]
-                    },
-                    {
-                        title: 'При пальпації',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'безболісні', isDefault: true},
-                            {value: 'болючі'},
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'не збільшені', isDefault: true},
+                                {value: 'збільшені'},
+                            ],
+                            [
+                                {value: 'безболісні при пальпації', isDefault: true},
+                                {value: 'болючі при пальпації'},
+                            ]
                         ]
                     },
                     {
@@ -508,6 +506,85 @@ const mainForm:Section[] = [
                         title: 'АТ на лівій руці',
                         type: 'textInput',
                         postfix: 'мм рт.ст.',
+                    },
+                ]
+            },
+            {
+                title: 'Органи травлення',
+                items: [
+                    {
+                        title: 'Зів',
+                        type: 'dropDown',
+                        values: [
+                            {value: 'без особливостей', isDefault: true},
+                            {value: 'гіперемований'},
+                            {value: 'other', text: 'інше'},
+                        ]
+                    },
+                    {
+                        title: 'Миклалики',
+                        type: 'dropDown',
+                        values: [
+                            {value: 'не збільшені', isDefault: true},
+                            {value: 'збільшені'},
+                            {value: 'видалені'},
+                            {value: 'other', text: 'інше'},
+                        ]
+                    },
+                    {
+                        title: 'Язик',
+                        type: 'dropDown',
+                        values: [
+                            {value: 'вологий', isDefault: true},
+                            {value: 'сухий'},
+                        ]
+                    },
+                    {
+                        title: 'Обкладений нальотом',
+                        type: 'checkBoxText',
+                        customValue: 'білого кольору'
+                    },
+                    {
+                        title: 'Живіт',
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value:'симетричний', isDefault: true},
+                                {value:'асиметричний'},
+                            ]
+                        ],
+                        checks: [
+                            {value: 'бере участь в акті дихання', isDefault: true},
+                            {value: 'втягнений'},
+                            {value: 'напружений'},
+                            {value: 'здутий'},
+                            {value: 'збільшений'},
+                        ]
+                    },
+                    {
+                        title: 'При пальпації живіт',
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value:'м`який', isDefault: true},
+                                {value:'напружений'},
+                            ],
+                            [
+                                {value:'болісний', isDefault: true},
+                                {value:'безболісний'},
+                            ]
+                        ],
+                        checks: [
+                            {value: 'other', text: 'інше'},
+                        ]
+                    },
+                    {
+                        title: 'Ознаки асциту',
+                        type: 'dropDown',
+                        values: [
+                            {value: 'ні', isDefault: true},
+                            {value: 'так'},
+                        ]
                     },
                 ]
             }
