@@ -31,7 +31,7 @@ export const Reactive = {
                     },
                     set:val=>{
                         _val = val;
-                        VEngineTsxRootHolder.ROOT._triggerRendering();
+                        VEngineTsxRootHolder.ROOT?._triggerRendering();
                     }
                 });
             });

@@ -77,6 +77,12 @@ export class DomElementCreator extends AbstractElementCreator<HTMLElementWrap>{
                 if (key.indexOf('on')===0) {// events
                     (htmlEl as Record<string, any>)[key] = props[key];
                 }
+                else if (key==='dataset') {
+                    const dataset = props[key] ?? {};
+                    for (const dataKey of Object.keys(dataset)) { // todo reconcile old object with new one
+                        htmlEl.dataset[dataKey] = dataset[dataKey];
+                    }
+                }
                 else if (model.attributes[key]!==props[key]) {
                     model.attributes[key] = props[key];
                     let attrName = key;
@@ -99,12 +105,12 @@ export class DomElementCreator extends AbstractElementCreator<HTMLElementWrap>{
                     else if (key==='className') attrName = 'class';
                     else if (key==='ref') {
                         virtualNode.props.ref(el);
-                        continue;
                     }
 
                     if (ELEMENT_PROPERTIES.indexOf(key)>-1) { // property
                         (htmlEl as any)[key] = props[key] ?? '';
-                    } else { // attribute
+                    }
+                    else { // attribute
                         const value = props[key];
                         if (value===null || value===undefined) htmlEl.removeAttribute(attrName);
                         else htmlEl.setAttribute(attrName,props[key]);

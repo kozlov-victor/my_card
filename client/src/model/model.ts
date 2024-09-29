@@ -1,57 +1,56 @@
 
-export interface ItemBase<T> {
-    type: string;
-    title: string|(()=>string);
-    value?: T;
-    customValue?:string;
-}
-
-export interface SelectItem {
-    value?:'other'|string;
-    text?:string;
-    isDefault?:true;
-}
 
 export interface SelectItem2 {
-    value:'other'|string;
-    text?:string;
+    value:string;
+    hasCustomText?:true;
+    isCustomTextOptional?:true;
+    initialCustomText?:string;
+    isLabelPrintable?:false;
     isDefault?:true;
+    isUndefined?:true;
 }
 
-export interface TextAreaItem extends ItemBase<string> {
+export interface ItemBase {
+    type: string;
+    title: string|(()=>string);
+}
+
+export interface TextAreaItem extends ItemBase {
+    value?: string;
     type: 'textArea';
 }
 
-export interface TextInputItem extends ItemBase<string> {
+export interface TextInputItem extends ItemBase {
+    value?: string;
     type: 'textInput';
     expandable?: true;
+    capitalize?:true;
     postfix?:string;
     formula?:()=>string;
 }
 
-export interface DateInputItem extends ItemBase<string> {
+export interface DateInputItem extends ItemBase {
+    value?: string;
     type: 'dateInput';
 }
 
-export interface CheckBoxTextItem extends ItemBase<boolean> {
+export interface CheckBoxTextItem extends ItemBase {
+    value?: boolean;
     type: 'checkBoxText';
+    customValue?:string;
 }
 
-export interface CheckBoxItem extends ItemBase<boolean> {
+export interface CheckBoxItem extends ItemBase {
     type: 'checkBox';
+    value?: boolean;
 }
 
-export interface DropDownItem extends ItemBase<string> {
-    type: 'dropDown';
-    values: SelectItem[];
-}
-
-export interface ComboSelectItem extends ItemBase<string> {
+export interface ComboSelectItem extends ItemBase {
     type: 'comboSelect';
     radioGroups?:SelectItem2[][];
     checks?:SelectItem2[];
-    values?:(string|undefined)[];
-    customValue?:string;
+    valuesList?:(string|undefined)[];
+    valuesMap?:Record<string, string|undefined>;
 }
 
 export interface Block {
@@ -59,8 +58,7 @@ export interface Block {
     items: (
         TextAreaItem|TextInputItem|
         DateInputItem|CheckBoxTextItem|
-        CheckBoxItem|DropDownItem|
-        ComboSelectItem
+        CheckBoxItem|ComboSelectItem
         )[];
 }
 

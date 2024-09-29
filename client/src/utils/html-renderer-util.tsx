@@ -35,6 +35,7 @@ export class HtmlRendererUtil {
                 margin: 40mm 17mm 17mm 17mm;
                 size: A4 portrait;
             }
+
             * {
                 padding: 0;
                 margin: 0;
@@ -43,15 +44,24 @@ export class HtmlRendererUtil {
                 outline: none;
                 font-size: 14pt;
             }
+
             body {
                 text-align: justify;
             }
+
+            .section {
+                page-break-inside: avoid;
+            }
+
             .title {
                 font-weight: bold;
+                background-color: #e1e1e1;
             }
+
             .sub-title {
                 font-style: italic;
             }
+
             .item {
                 display: inline-block;
                 vertical-align: baseline;

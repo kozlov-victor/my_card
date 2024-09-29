@@ -16,16 +16,52 @@ const mainForm:Section[] = [
             {
                 items: [
                     {
-                        title: 'Прізвище', // todo
+                        title: 'Прізвище',
                         type: 'textInput',
+                        capitalize: true,
                     },
                     {
                         title: 'Ім`я',
                         type: 'textInput',
+                        capitalize: true,
                     },
                     {
                         title: 'По-батькові',
                         type: 'textInput',
+                        capitalize: true,
+                    },
+                    {
+                        title: 'Стать',
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value:'ч'},
+                                {value:'ж'},
+                            ]
+                        ],
+                    },
+                    {
+                        title: 'Дата народження',
+                        type: 'dateInput',
+                    },
+                    {
+                        title: 'Вік',
+                        type: 'textInput',
+                        formula:()=>{
+                            const dobString = getValue('Дата народження');
+                            if (!dobString) return '';
+                            const splited = dobString.split('.');
+                            const dob = new Date(splited[2],splited[1]-1,splited[0]);
+                            const currentDate = new Date();
+                            const currentYear = currentDate.getFullYear();
+                            const birthdayThisYear = new Date(currentYear, dob.getMonth(), dob.getDate());
+                            let age = currentYear - dob.getFullYear();
+                            if(birthdayThisYear > currentDate) {
+                                age--;
+                            }
+                            return age+'';
+                        },
+                        postfix: 'р.'
                     },
                 ]
             }
@@ -67,64 +103,87 @@ const mainForm:Section[] = [
             {
                 items: [
                     {
-                        title: 'Стать',
-                        type: 'dropDown',
-                        values: [
-                            {value:'ч'},
-                            {value:'ж'},
-                        ]
-                    },
-                    {
                         title: 'Група крові',
-                        type: 'dropDown',
-                        values: [
-                            {value:'I'},
-                            {value:'II'},
-                            {value:'III'},
-                            {value:'IV'},
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value:'значення не встановлено', isDefault: true, isUndefined: true},
+                                {value:'I'},
+                                {value:'II'},
+                                {value:'III'},
+                                {value:'IV'},
+                            ]
                         ]
                     },
                     {
                         title: 'Алергії',
-                        type: 'textInput',
-                        value: 'заперечує',
-                        expandable: true,
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'не відмічає', isDefault: true},
+                                {value: 'перелік', isLabelPrintable: false, hasCustomText: true},
+                            ]
+                        ],
                     },
                     {
                         title: 'Інфекційні захворювання',
-                        type: 'textInput',
-                        value: 'заперечує',
-                        expandable: true,
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'заперечує', isDefault: true},
+                                {value: 'перелік', isLabelPrintable: false, hasCustomText: true},
+                            ]
+                        ],
                     },
                     {
                         title: 'Оперативні втручання',
-                        type: 'textInput',
-                        value: 'заперечує',
-                        expandable: true,
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'заперечує', isDefault: true},
+                                {value: 'перелік', isLabelPrintable: false, hasCustomText: true},
+                            ]
+                        ],
                     },
                     {
                         title: 'Хронічні захворювання',
-                        type: 'textInput',
-                        value: 'заперечує',
-                        expandable: true,
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'заперечує', isDefault: true},
+                                {value: 'перелік', isLabelPrintable: false, hasCustomText: true},
+                            ]
+                        ],
                     },
                     {
                         title: 'Травми',
-                        type: 'textInput',
-                        value: 'заперечує',
-                        expandable: true,
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'заперечує', isDefault: true},
+                                {value: 'перелік', isLabelPrintable: false, hasCustomText: true},
+                            ]
+                        ],
                     },
                     {
                         title: 'Ліки, що приймає регулярно',
-                        type: 'textInput',
-                        value: 'відсутні',
-                        expandable: true,
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'відсутні', isDefault: true},
+                                {value: 'перелік', isLabelPrintable: false, hasCustomText: true},
+                            ]
+                        ],
                     },
                     {
                         title: 'Сімейний анамнез',
-                        type: 'textInput',
-                        value: 'не обтяжений',
-                        expandable: true,
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'не обтяжений', isDefault: true},
+                                {value: 'інше', isLabelPrintable: false, hasCustomText: true},
+                            ]
+                        ],
                     },
                 ]
             }
@@ -165,64 +224,68 @@ const mainForm:Section[] = [
                     },
                     {
                         title: 'Загальний стан',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'задовільний', isDefault: true},
-                            {value: 'середньої важкості'},
-                            {value: 'важкий'},
-                            {value: 'критичний'},
-                            {value: 'other'},
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'задовільний', isDefault: true},
+                                {value: 'середньої важкості'},
+                                {value: 'важкий'},
+                                {value: 'критичний'},
+                            ]
                         ]
                     },
                     {
                         title: 'Свідомість',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'ясна', isDefault: true},
-                            {value: 'загальмована'},
-                            {value: 'ступор'},
-                            {value: 'сопор'},
-                            {value: 'кома'},
-                            {value: 'other', text: 'інше'},
-                        ]
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [{value: 'ясна', isDefault: true},
+                                {value: 'загальмована'},
+                                {value: 'ступор'},
+                                {value: 'сопор'},
+                                {value: 'кома'},
+
+                            ]
+                        ],
                     },
                     {
                         title: 'Положення',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'активне', isDefault: true},
-                            {value: 'пасивне'},
-                            {value: 'вимушене'},
-                            {value: 'other', text: 'інше'},
-                        ]
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'активне', isDefault: true},
+                                {value: 'пасивне'},
+                                {value: 'вимушене', hasCustomText: true, isCustomTextOptional: true},
+                            ]
+                        ],
                     },
                     {
                         title: 'Конституція',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'нормостенічна', isDefault: true},
-                            {value: 'гіперстенічна'},
-                            {value: 'астенічна'},
-                        ]
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'нормостенічна', isDefault: true},
+                                {value: 'гіперстенічна'},
+                                {value: 'астенічна'},
+                            ]
+                        ],
                     },
                     {
-                        title: 'Колір шкірних покривів',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'звичайни', isDefault: true},
-                            {value: 'субіктеричний'},
-                            {value: 'іктеричний'},
-                            {value: 'ціанотичний'},
-                            {value: 'other', text: 'інше'},
-                        ]
-                    },
-                    {
-                        title: 'Шкіра',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'волога', isDefault: true},
-                            {value: 'суха'},
-                            {value: 'other', text: 'інше'},
+                        title: 'Шкірні покриви',
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'звичайного кольору', isDefault: true},
+                                {value: 'субіктеричні'},
+                                {value: 'іктеричні'},
+                                {value: 'ціанотичні'},
+                            ],
+                            [
+                                {value: 'вологі', isDefault: true},
+                                {value: 'сухі'},
+                            ]
+                        ],
+                        checks: [
+                            {value: 'інше', isLabelPrintable: false, hasCustomText: true},
                         ]
                     },
                     {
@@ -231,40 +294,49 @@ const mainForm:Section[] = [
                     },
                     {
                         title: 'Слизові оболонки',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'звичайні', isDefault: true},
-                            {value: 'блідо-рожеві'},
-                            {value: 'бліді'},
-                            {value: 'субіктеричні'},
-                            {value: 'іктеричні'},
-                            {value: 'other', text: 'інше'},
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'звичайні', isDefault: true},
+                                {value: 'блідо-рожеві'},
+                                {value: 'бліді'},
+                                {value: 'субіктеричні'},
+                                {value: 'іктеричні'},
+                            ]
+                        ],
+                        checks: [
+                            {value: 'інше', isLabelPrintable: false, hasCustomText: true},
                         ]
                     },
                     {
                         title: 'Підшкірна клітковина розвинена',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'задовільно', isDefault: true},
-                            {value: 'слабо'},
-                            {value: 'надмірно'},
-                            {value: 'other', text: 'інше'},
-                        ]
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'достатньо', isDefault: true},
+                                {value: 'слабо'},
+                                {value: 'надмірно'},
+                            ]
+                        ],
                     },
                     {
                         title: 'Набряки',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'відсутні', isDefault: true},
-                            {value: 'other', text: 'інше'},
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'відсутні', isDefault: true},
+                                {value: 'описати', isLabelPrintable: false, hasCustomText: true},
+                            ]
                         ]
                     },
                     {
                         title: 'Кістково-суглобовий та м`язовий апарат',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'без особливостей', isDefault: true},
-                            {value: 'other', text: 'інше'},
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'без особливостей', isDefault: true},
+                                {value: 'описати особливості', isLabelPrintable: false, hasCustomText: true},
+                            ]
                         ]
                     },
                     {
@@ -274,11 +346,13 @@ const mainForm:Section[] = [
                             else if (gender==='ж') return 'Молочні залози';
                             else return 'Грудні залози';
                         },
-                        type: 'dropDown',
-                        values: [
-                            {value: 'без особливостей', isDefault: true},
-                            {value: 'other', text: 'інше'},
-                        ]
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'без особливостей', isDefault: true},
+                                {value: 'інше', isLabelPrintable: false, hasCustomText: true},
+                            ]
+                        ],
                     },
                     {
                         title: 'Лімфатичні вузли',
@@ -291,15 +365,14 @@ const mainForm:Section[] = [
                             [
                                 {value: 'безболісні при пальпації', isDefault: true},
                                 {value: 'болючі при пальпації'},
+                            ],
+                            [
+                                {value: 'не зв`язані з оточуючими тканинами', isDefault: true},
+                                {value: 'зв`язані з оточуючими тканинами'},
                             ]
-                        ]
-                    },
-                    {
-                        title: 'Зв`язок з оточуючими тканинами',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'так', isDefault: true},
-                            {value: 'ні'}
+                        ],
+                        checks: [
+                            {value: 'інше', isLabelPrintable: false, hasCustomText: true},
                         ]
                     },
                 ]
@@ -314,79 +387,80 @@ const mainForm:Section[] = [
                     {
                         title: 'ЧД',
                         type: 'textInput',
+                        postfix: 'на хв.'
                     },
                     {
                         title: 'Грудна клітка',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'нормальна', isDefault: true},
-                            {value: 'деформована'},
-                            {value: 'other', text: 'інше'},
-                        ]
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'нормальна', isDefault: true},
+                                {value: 'деформована'},
+                                {value: 'інше', isLabelPrintable: false, hasCustomText: true},
+                            ],
+                        ],
                     },
                     {
                         title: 'Бере участь в акті дихання',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'симетрично', isDefault: true},
-                            {value: 'відстає права половина', isDefault: true},
-                            {value: 'відстає ліва половина', isDefault: true},
-                            {value: 'other', text: 'інше'},
-                        ]
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'симетрично', isDefault: true},
+                                {value: 'відстає права половина'},
+                                {value: 'відстає ліва половина'},
+                                {value: 'інше', isLabelPrintable: false, hasCustomText: true},
+                            ],
+                        ],
                     },
                     {
                         title: 'Підшкірна емфізема',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'ні', isDefault: true},
-                            {value: 'other', text: 'інше'},
-                        ]
+                        type: 'checkBoxText',
                     },
                     {
                         title: 'Пальпаторна крепітація',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'відсутня', isDefault: true},
-                            {value: 'other', text: 'інше'},
-                        ]
-                    },
-                    {
-                        title: 'Пальпаторна крепітація',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'відсутня', isDefault: true},
-                            {value: 'other', text: 'інше'},
-                        ]
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'відсутня', isDefault: true},
+                                {value: 'інше', isLabelPrintable: false, hasCustomText: true},
+                            ],
+                        ],
                     },
                     {
                         title: 'Перкуторний звук',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'ясний', isDefault: true},
-                            {value: 'коробковий'},
-                            {value: 'вкорочений'},
-                            {value: 'other', text: 'інше'},
-                        ]
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'ясний', isDefault: true},
+                                {value: 'коробковий'},
+                                {value: 'вкорочений'},
+                                {value: 'інше', isLabelPrintable: false, hasCustomText: true},
+                            ],
+                        ],
                     },
                     {
                         title: 'Рухомість легеневого краю',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'нормальна'},
-                            {value: 'обмежена'},
-                            {value: 'other', text: 'інше'},
-                        ]
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'нормальна', isDefault: true},
+                                {value: 'обмежена'},
+                                {value: 'інше', isLabelPrintable: false, hasCustomText: true},
+                            ],
+                        ],
                     },
                     {
                         title: 'Аускультація',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'дихання везикулярне', isDefault: true},
-                            {value: 'дихання жорстке'},
-                            {value: 'дихання ослаблене'},
-                            {value: 'дихання бронхіальне'},
-                            {value: 'other', text: 'інше'},
-                        ]
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'дихання везикулярне', isDefault: true},
+                                {value: 'дихання жорстке'},
+                                {value: 'дихання ослаблене'},
+                                {value: 'дихання бронхіальне'},
+                                {value: 'інше', isLabelPrintable: false, hasCustomText: true},
+                            ],
+                        ],
                     },
                     {
                         title: 'Сухі хрипи',
@@ -403,71 +477,72 @@ const mainForm:Section[] = [
                 items: [
                     {
                         title: 'Видима пульсація артерій',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'відсутня', isDefault: true},
-                            {value: 'other', text: 'інше'},
-                        ]
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'немає', isDefault: true},
+                                {value: 'відмічається'},
+                            ]
+                        ],
                     },
                     {
                         title: 'Видима пульсація вен',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'відсутня', isDefault: true},
-                            {value: 'other', text: 'інше'},
-                        ]
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'немає', isDefault: true},
+                                {value: 'відмічається'},
+                            ]
+                        ],
                     },
                     {
                         title: 'Верхівковий поштовх',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'нормальний', isDefault: true},
-                            {value: 'розлитий'},
-                            {value: 'other', text: 'інше'},
-                        ]
+                        type: 'comboSelect',
+                        radioGroups: [
+                           [
+                               {value: 'нормальний', isDefault: true},
+                               {value: 'розлитий'},
+                           ]
+                        ],
+                        checks: [
+                            {value: 'зміщений', hasCustomText: true},
+                        ],
                     },
                     {
-                        title: 'Межі серця. Права',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'в межах норми', isDefault: true},
-                            {value: 'other', text: 'інше'},
-                        ]
+                        title: 'Межі серця',
+                        type: 'comboSelect',
+                        checks: [
+                            {value: 'права', isDefault: true, hasCustomText: true, initialCustomText: 'в межах норми'},
+                            {value: 'ліва', isDefault: true, hasCustomText: true, initialCustomText: 'в межах норми'},
+                            {value: 'верхня', isDefault: true, hasCustomText: true, initialCustomText: 'в межах норми'},
+                        ],
                     },
                     {
-                        title: 'Ліва',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'в межах норми', isDefault: true},
-                            {value: 'other', text: 'інше'},
-                        ]
-                    },
-                    {
-                        title: 'Верхня',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'в межах норми', isDefault: true},
-                            {value: 'other', text: 'інше'},
-                        ]
-                    },
-                    {
-                        title: 'Аускультація',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'тони серця чисті', isDefault: true},
-                            {value: 'тони серця голосні'},
-                            {value: 'тони серця приглушені'},
-                            {value: 'other', text: 'інше'},
-                        ]
+                       title: 'Аускультація',
+                       type: 'comboSelect',
+                       radioGroups: [
+                           [
+                               {value: 'тони серця чисті', isDefault: true},
+                               {value: 'тони серця голосні'},
+                               {value: 'тони серця приглушені'},
+                           ]
+                       ],
+                       checks: [
+                           {value: 'інше', isLabelPrintable: false, hasCustomText: true},
+                       ]
                     },
                     {
                         title: 'Шуми',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'відсутні', isDefault: true},
-                            {value: 'систолічний'},
-                            {value: 'діастолічний'},
-                            {value: 'other', text: 'інше'},
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'відсутні', isDefault: true},
+                                {value: 'систолічний', hasCustomText: true, isCustomTextOptional: true},
+                                {value: 'діастолічний', hasCustomText: true, isCustomTextOptional: true},
+                            ]
+                        ],
+                        checks: [
+                            {value: 'інше', isLabelPrintable: false, hasCustomText: true},
                         ]
                     },
                     {
@@ -480,11 +555,15 @@ const mainForm:Section[] = [
                     },
                     {
                         title: 'Ритм серця',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'правильний', isDefault: true},
-                            {value: 'аритмічний'},
-                            {value: 'other', text: 'інше'},
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'правильний', isDefault: true},
+                                {value: 'аритмічний'},
+                            ]
+                        ],
+                        checks: [
+                            {value: 'інше', isLabelPrintable: false, hasCustomText: true},
                         ]
                     },
                     {
@@ -514,35 +593,43 @@ const mainForm:Section[] = [
                 items: [
                     {
                         title: 'Зів',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'без особливостей', isDefault: true},
-                            {value: 'гіперемований'},
-                            {value: 'other', text: 'інше'},
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'без особливостей', isDefault: true},
+                                {value: 'гіперемований'},
+                            ]
+                        ],
+                        checks: [
+                            {value: 'інше', isLabelPrintable: false, hasCustomText: true},
                         ]
                     },
                     {
-                        title: 'Миклалики',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'не збільшені', isDefault: true},
-                            {value: 'збільшені'},
-                            {value: 'видалені'},
-                            {value: 'other', text: 'інше'},
+                        title: 'Миглалики',
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'не збільшені', isDefault: true},
+                                {value: 'збільшені'},
+                                {value: 'видалені'},
+                            ]
+                        ],
+                        checks: [
+                            {value: 'інше', isLabelPrintable: false, hasCustomText: true},
                         ]
                     },
                     {
                         title: 'Язик',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'вологий', isDefault: true},
-                            {value: 'сухий'},
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'вологий', isDefault: true},
+                                {value: 'сухий'},
+                            ]
+                        ],
+                        checks: [
+                            {value: 'обкладений нальотом', hasCustomText: true, isCustomTextOptional: true},
                         ]
-                    },
-                    {
-                        title: 'Обкладений нальотом',
-                        type: 'checkBoxText',
-                        customValue: 'білого кольору'
                     },
                     {
                         title: 'Живіт',
@@ -558,7 +645,7 @@ const mainForm:Section[] = [
                             {value: 'втягнений'},
                             {value: 'напружений'},
                             {value: 'здутий'},
-                            {value: 'збільшений'},
+                            {value: 'збільшений за рахунок', hasCustomText: true},
                         ]
                     },
                     {
@@ -570,21 +657,90 @@ const mainForm:Section[] = [
                                 {value:'напружений'},
                             ],
                             [
-                                {value:'болісний', isDefault: true},
-                                {value:'безболісний'},
+                                {value:'безболісний', isDefault: true},
+                                {value:'болісний'},
                             ]
                         ],
                         checks: [
-                            {value: 'other', text: 'інше'},
+                            {value: 'інше', isLabelPrintable: false, hasCustomText: true},
                         ]
                     },
                     {
                         title: 'Ознаки асциту',
-                        type: 'dropDown',
-                        values: [
-                            {value: 'ні', isDefault: true},
-                            {value: 'так'},
+                        type: 'checkBox',
+                    },
+                    {
+                        title: 'Печінка',
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'не збільшена', isDefault: true},
+                                {value: 'збільшена', hasCustomText: true, isCustomTextOptional: true},
+                            ],
+                            [
+                                {value:'не виступає з-під краю реберної дуги', isDefault: true},
+                                {value:'виступає з-під краю реберної дуги', hasCustomText: true, isCustomTextOptional: true},
+                            ],
+                            [
+                                {value:'нижній край м`який', isDefault: true},
+                                {value:'нижній край ущільнений'},
+                            ],
+                            [
+                                {value:'при пальпації безболісна', isDefault: true},
+                                {value:'при пальпації болюча'},
+                            ]
+                        ],
+                        checks: [
+                            {value: 'інше', isLabelPrintable: false, hasCustomText: true},
                         ]
+                    },
+                    {
+                        title: 'Жовчний міхур',
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value:'не збільшений', isDefault: true},
+                                {value:'збільшений', hasCustomText: true},
+                            ],
+                            [
+                                {value:'безболісний', isDefault: true},
+                                {value:'болючий'},
+                            ],
+                        ],
+                        checks: [
+                            {value: 'інше', isLabelPrintable: false, hasCustomText: true},
+                        ]
+                    },
+                    {
+                        title: 'Селезінка',
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'не збільшена', isDefault: true},
+                                {value: 'збільшена'},
+                            ],
+                            [
+                                {value: 'безболісна', isDefault: true},
+                                {value: 'болісна'},
+                            ]
+                        ],
+                        checks: [
+                            {value: 'розміри', hasCustomText: true},
+                            {value: 'інше', isLabelPrintable: false, hasCustomText: true},
+                        ]
+                    },
+                ]
+            }
+        ]
+    },
+    {
+        title: 'Діагноз',
+        blocks: [
+            {
+                items: [
+                    {
+                        title: '',
+                        type: 'textArea',
                     },
                 ]
             }
@@ -636,7 +792,7 @@ const getValue = (name:string)=>{
     for (const s of mainForm) {
         for (const b of s.blocks) {
             for (const i of b.items) {
-                if (i.title===name) return i.value;
+                if (i.title===name) return (i as any).value;
             }
         }
     }

@@ -1,8 +1,8 @@
 import {IBaseProps} from "@engine/renderable/tsx/_genetic/virtualNode";
 import {
     CheckBoxItem,
-    CheckBoxTextItem, ComboSelectItem,
-    DropDownItem,
+    CheckBoxTextItem,
+    ComboSelectItem, DateInputItem,
     ItemBase,
     Section,
     TextAreaItem,
@@ -13,9 +13,9 @@ import {
     CheckBoxComponent,
     CheckBoxPrintComponent,
     CheckBoxTextComponent,
-    CheckBoxTextPrintComponent, ComboSelectComponent, CompoSelectPrintComponent,
-    DropDownComponent,
-    DropDownPrintComponent,
+    CheckBoxTextPrintComponent,
+    ComboSelectComponent,
+    CompoSelectPrintComponent, DateInputComponent, DateInputPrintComponent,
     TextAreaComponent,
     TextAreaPrintComponent,
     TextInputComponent,
@@ -24,26 +24,32 @@ import {
 import {BaseTsxComponent} from "@engine/renderable/tsx/base/baseTsxComponent";
 
 
-const getComponentItemByType = (section:Section,item:ItemBase<any>,trackBy:string)=>{
+const getComponentItemByType = (section:Section,item:ItemBase,trackBy:string):[JSX.Element,JSX.Element]=>{
     switch (item.type) {
-        case 'textArea': return <TextAreaComponent trackBy={trackBy} item={item as TextAreaItem} section={section}/>
-        case 'textInput': return <TextInputComponent trackBy={trackBy} item={item as TextInputItem}/>
-        case 'checkBoxText': return <CheckBoxTextComponent trackBy={trackBy} item={item as CheckBoxTextItem}/>
-        case 'checkBox': return <CheckBoxComponent trackBy={trackBy} item={item as CheckBoxItem}/>
-        case 'dropDown': return <DropDownComponent trackBy={trackBy} item={item as DropDownItem}/>
-        case 'comboSelect': return <ComboSelectComponent trackBy={trackBy} item={item as ComboSelectItem}/>
-        default: throw new Error(`wrong item type: ${item.type}`);
-    }
-}
-
-const getPrintComponentItemByType = (section:Section,item:ItemBase<any>)=>{
-    switch (item.type) {
-        case 'textArea': return <TextAreaPrintComponent item={item as TextAreaItem} section={section}/>
-        case 'textInput': return <TextInputPrintComponent  item={item as TextInputItem}/>
-        case 'checkBoxText': return <CheckBoxTextPrintComponent  item={item as CheckBoxTextItem}/>
-        case 'checkBox': return <CheckBoxPrintComponent item={item as CheckBoxItem}/>
-        case 'dropDown': return <DropDownPrintComponent item={item as DropDownItem}/>
-        case 'comboSelect': return <CompoSelectPrintComponent item={item as ComboSelectItem}/>
+        case 'textArea': return [
+            <TextAreaComponent trackBy={trackBy} item={item as TextAreaItem} section={section}/>,
+            <TextAreaPrintComponent item={item as TextAreaItem} section={section}/>
+        ]
+        case 'textInput': return [
+            <TextInputComponent trackBy={trackBy} item={item as TextInputItem}/>,
+            <TextInputPrintComponent  item={item as TextInputItem}/>
+        ]
+        case 'checkBoxText': return [
+            <CheckBoxTextComponent trackBy={trackBy} item={item as CheckBoxTextItem}/>,
+            <CheckBoxTextPrintComponent  item={item as CheckBoxTextItem}/>
+        ]
+        case 'checkBox': return [
+            <CheckBoxComponent trackBy={trackBy} item={item as CheckBoxItem}/>,
+            <CheckBoxPrintComponent item={item as CheckBoxItem}/>
+        ]
+        case 'comboSelect': return [
+            <ComboSelectComponent trackBy={trackBy} item={item as ComboSelectItem}/>,
+            <CompoSelectPrintComponent item={item as ComboSelectItem}/>
+        ]
+        case 'dateInput': return [
+            <DateInputComponent trackBy={trackBy} item={item as DateInputItem}/>,
+            <DateInputPrintComponent item={item as DateInputItem}/>
+        ]
         default: throw new Error(`wrong item type: ${item.type}`);
     }
 }
@@ -64,7 +70,7 @@ export class SectionComponent extends BaseTsxComponent {
                             <h3>{block.title}</h3>
                             {block.items.map((block, itemIndex) =>
                                 <div
-                                    className={`item ${block.type}`}>{getComponentItemByType(this.props.section,block, this.props.trackBy + '_' + blockIndex+"_" + itemIndex)}</div>
+                                    className={`item ${block.type}`}>{getComponentItemByType(this.props.section,block, this.props.trackBy + '_' + blockIndex+"_" + itemIndex)[0]}</div>
                             )}
                         </>
                     )}
@@ -78,13 +84,13 @@ export class SectionComponent extends BaseTsxComponent {
 export const SectionPrintComponent = (props: IBaseProps & {section:Section})=>{
     return (
         <>
-            <div>
+            <div className={'section'}>
                 <div className="title">{props.section.title}</div>
                 {props.section.blocks.map((block,blockIndex)=>
                     <>
                         <div className="sub-title">{block.title}</div>
                         {block.items.map((block) =>
-                           getPrintComponentItemByType(props.section,block)
+                            getComponentItemByType(props.section,block,'')[1]
                         )}
                     </>
                 )}
