@@ -84,17 +84,15 @@ export class SectionComponent extends BaseTsxComponent {
 export const SectionPrintComponent = (props: IBaseProps & {section:Section})=>{
     return (
         <>
-            <div className={'section'}>
-                <div className="title">{props.section.title}</div>
-                {props.section.blocks.map((block,blockIndex)=>
-                    <>
-                        <div className="sub-title">{block.title}</div>
-                        {block.items.map((block) =>
-                            getComponentItemByType(props.section,block,'')[1]
-                        )}
-                    </>
-                )}
-            </div>
+            <div className="title">{props.section.title}</div>
+            {props.section.blocks.map(block =>
+                <div className={'no-break'}>
+                    <div className="sub-title">{block.title}</div>
+                    {block.items.map(block =>
+                        getComponentItemByType(props.section, block, '')[1]
+                    )}
+                </div>
+            )}
         </>
     );
 }

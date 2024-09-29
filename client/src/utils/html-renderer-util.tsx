@@ -49,7 +49,7 @@ export class HtmlRendererUtil {
                 text-align: justify;
             }
 
-            .section {
+            .no-break {
                 page-break-inside: avoid;
             }
 

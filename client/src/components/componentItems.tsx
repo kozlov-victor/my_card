@@ -336,6 +336,15 @@ export class ComboSelectComponent extends AbstractInputBase {
     @Reactive.Method()
     private setRadioValue(groupIndex:number, value: string) {
         this.props.item.valuesList![groupIndex] = value;
+
+        if (
+            this.props.item?.radioGroups?.length===1 &&
+            !this.props.item.checks
+            && !this.props.item.radioGroups[0].find(it=>it.hasCustomText)
+        ) {
+            ComboSelectComponent.currentComponent = undefined;
+        }
+
     }
 
     @Reactive.Method()
@@ -344,6 +353,7 @@ export class ComboSelectComponent extends AbstractInputBase {
             this.props.item.radioGroups.length:0;
         this.props.item.valuesList![groupsNum + checkIndex] =
             checked? value: undefined;
+
     }
 
     @Reactive.Method()

@@ -733,6 +733,85 @@ const mainForm:Section[] = [
                             {value: 'інше', isLabelPrintable: false, hasCustomText: true},
                         ]
                     },
+                    {
+                        title: 'Випорожнення',
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'нармальні', isDefault: true},
+                                {value: 'запори', hasCustomText: true, isCustomTextOptional: true},
+                                {value: 'діарея', hasCustomText: true, isCustomTextOptional: true},
+                            ],
+                        ],
+                        checks: [
+                            {value: 'інше', isLabelPrintable: false, hasCustomText: true},
+                        ]
+                    },
+                    {
+                        title: 'Колір калу',
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'звичаний', isDefault: true},
+                                {value: 'інше', isLabelPrintable: false, hasCustomText: true},
+                            ],
+                        ],
+                    },
+                ]
+            },
+            {
+                title: 'Сечостатева система',
+                items: [
+                    {
+                        title: 'Сечовипускання',
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'нормальне', isDefault: true},
+                                {value: 'часте'},
+                            ],
+                            [
+                                {value: 'неутруднене', isDefault: true},
+                                {value: 'утруднене'},
+                            ],
+                            [
+                                {value: 'безболісне', isDefault: true},
+                                {value: 'болісне'},
+                            ],
+                        ],
+                        checks: [
+                            {value: 'різі'},
+                            {value: 'інше', isLabelPrintable: false, hasCustomText: true},
+                        ]
+                    },
+                    {
+                        title: 'Нирки',
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'не пальпуються', isDefault: true},
+                                {value: 'пальпуються'},
+                            ],
+                        ],
+                        checks: [
+                            {value: 'розміри', hasCustomText: true},
+                            {value: 'інше', isLabelPrintable: false, hasCustomText: true},
+                        ]
+                    },
+                    {
+                        title: 'Симптом Пастернацього',
+                        type: 'comboSelect',
+                        radioGroups: [
+                            [
+                                {value: 'негативний', isDefault: true},
+                                {value: 'позитивний', hasCustomText: true, isCustomTextOptional: true},
+                                {value: 'слабо позитивний', hasCustomText: true, isCustomTextOptional: true},
+                            ],
+                        ],
+                        checks: [
+                            {value: 'інше', isLabelPrintable: false, hasCustomText: true},
+                        ]
+                    }
                 ]
             }
         ]
@@ -764,7 +843,7 @@ const mainForm:Section[] = [
         ]
     },
     {
-        title: 'Рекомендації',
+        title: 'План лікування',
         blocks: [
             {
                 items: [
@@ -777,7 +856,7 @@ const mainForm:Section[] = [
         ]
     },
     {
-        title: 'План лікування',
+        title: 'Рекомендації',
         blocks: [
             {
                 items: [

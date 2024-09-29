@@ -76,7 +76,7 @@ export class InputMask {
         el.addEventListener('keyup',e=>{
             if (
                 [
-                    37,39, // cursor lef right
+                    37,39, // cursor left right
                     8 // backspace
                 ].indexOf(e.keyCode)>-1
             ) return;
