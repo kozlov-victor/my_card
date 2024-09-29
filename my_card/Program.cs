@@ -27,7 +27,7 @@ namespace my_card
             new Thread(() => {
                 Thread.Sleep(1000);
                 Console.WriteLine("Ready!");
-                //System.Diagnostics.Process.Start(url);
+                System.Diagnostics.Process.Start(url);
             }).Start();
             server.Listen();
         }
