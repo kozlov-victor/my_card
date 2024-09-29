@@ -7,10 +7,10 @@ export const Reactive = {
             context.addInitializer(function(){
                 (this as any)[context.name] = ((...args: any[])=>{
                     const result = originalMethod.apply(this, args);
-                    VEngineTsxRootHolder.ROOT._triggerRendering();
+                    VEngineTsxRootHolder.ROOT?._triggerRendering();
                     if (result instanceof Promise) {
                         result.then(()=>{
-                            VEngineTsxRootHolder.ROOT._triggerRendering();
+                            VEngineTsxRootHolder.ROOT?._triggerRendering();
                         });
                     }
                     return result;
@@ -43,7 +43,7 @@ export const Reactive = {
             VEngineTsxRootHolder.ROOT._triggerRendering();
             if (res instanceof Promise) {
                 res.then(()=>{
-                    VEngineTsxRootHolder.ROOT._triggerRendering();
+                    VEngineTsxRootHolder.ROOT?._triggerRendering();
                 });
             }
             return res;

@@ -8,6 +8,7 @@ import {HttpClient} from "./httpClient";
 import {Dialogs} from "./components/dialogs/dialogs";
 import {PrintDialog} from "./components/dialogs/print-dialog";
 import {HtmlRendererUtil} from "./utils/html-renderer-util";
+import {formatDate, parseDate} from "./utils/date-util";
 
 const mainForm:Section[] = [
     {
@@ -48,10 +49,8 @@ const mainForm:Section[] = [
                         title: 'Вік',
                         type: 'textInput',
                         formula:()=>{
-                            const dobString = getValue('Дата народження');
-                            if (!dobString) return '';
-                            const splited = dobString.split('.');
-                            const dob = new Date(splited[2],splited[1]-1,splited[0]);
+                            const dob = parseDate(getValue('Дата народження'));
+                            if (!dob) return '';
                             const currentDate = new Date();
                             const currentYear = currentDate.getFullYear();
                             const birthdayThisYear = new Date(currentYear, dob.getMonth(), dob.getDate());
@@ -63,6 +62,11 @@ const mainForm:Section[] = [
                         },
                         postfix: 'р.'
                     },
+                    {
+                        title: 'Дата проведення консультації',
+                        type: 'dateInput',
+                        value: formatDate(new Date()),
+                    }
                 ]
             }
         ]
@@ -829,7 +833,6 @@ export class MainWidget extends DomRootComponent {
         await PrintDialog.open();
     }
 
-
     render(): JSX.Element {
         return (
             <>
@@ -840,6 +843,17 @@ export class MainWidget extends DomRootComponent {
             </>
         );
     }
+}
 
+export class PrintWidget extends DomRootComponent{
+
+    render(): JSX.Element {
+        return (
+            <>
+                Готуємо документ до друку...
+            </>
+        );
+    }
 
 }
+

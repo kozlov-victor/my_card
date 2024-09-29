@@ -13,6 +13,7 @@ import {Reactive} from "@engine/renderable/tsx/decorator/reactive";
 import {AddMyTemplateDialog} from "./dialogs/add-my-template-dialog";
 import {HttpClient} from "../httpClient";
 import {ShowMyTemplatesDialog} from "./dialogs/show-my-templates-dialog";
+import {InputMask} from "../utils/input-mask";
 
 const getTitle = (item:ItemBase)=>{
     if (item.title!==undefined && (item.title as ()=>string).call!==undefined) {
@@ -92,15 +93,25 @@ export class TextAreaComponent extends AbstractInputBase {
 
 export class DateInputComponent extends AbstractInputBase {
 
+    private input:HTMLInputElement;
+
     constructor(private props: IBaseProps & {item:DateInputItem}) {
         super();
+    }
+
+    override onMounted() {
+        super.onMounted();
+        new InputMask(this.input,'DD.DD.DDDD');
     }
 
     render(): JSX.Element {
         return (
             <>
                 <div>{getTitle(this.props.item)}</div>
-                <input value={this.props.item.value} onchange={e=>this.setValue(this.props.item,(e.target as HTMLInputElement).value)}/>
+                <input
+                    ref={el=>this.input = el}
+                    value={this.props.item.value}
+                    onchange={e=>this.setValue(this.props.item,(e.target as HTMLInputElement).value)}/>
             </>
         );
     }
