@@ -12,7 +12,7 @@ export interface SelectItem2 {
 
 export interface ItemBase {
     type: string;
-    title: string|(()=>string);
+    title: string|((mainForm:Section[])=>string);
 }
 
 export interface TextAreaItem extends ItemBase {
@@ -24,9 +24,9 @@ export interface TextInputItem extends ItemBase {
     value?: string;
     type: 'textInput';
     expandable?: true;
-    capitalize?:true;
+    transform?:'capitalize'|'asIs';
     postfix?:string;
-    formula?:()=>string;
+    formula?:(mainForm:Section[])=>string;
 }
 
 export interface DateInputItem extends ItemBase {
@@ -53,16 +53,12 @@ export interface ComboSelectItem extends ItemBase {
     valuesMap?:Record<string, string|undefined>;
 }
 
-export interface Block {
-    title?:string;
+export interface Section {
+    title: string;
+    isSubBlock?:true;
     items: (
         TextAreaItem|TextInputItem|
         DateInputItem|CheckBoxTextItem|
         CheckBoxItem|ComboSelectItem
         )[];
-}
-
-export interface Section {
-    title: string;
-    blocks:Block[];
 }

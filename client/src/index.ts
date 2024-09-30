@@ -6,6 +6,6 @@ root.id = 'root';
 document.body.appendChild(root);
 
 const widget =
-    location.search.indexOf('print')===-1?
+    location.search.indexOf('prepareDocument')===-1?
     new MainWidget():new PrintWidget();
 widget.mountTo(new HTMLElementWrap(root));

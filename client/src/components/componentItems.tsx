@@ -15,9 +15,9 @@ import {HttpClient} from "../httpClient";
 import {ShowMyTemplatesDialog} from "./dialogs/show-my-templates-dialog";
 import {InputMask} from "../utils/input-mask";
 
-const getTitle = (item:ItemBase)=>{
+const getTitle = (mainForm:Section[],item:ItemBase)=>{
     if (item.title!==undefined && (item.title as ()=>string).call!==undefined) {
-        return (item.title as ()=>string)();
+        return (item.title as (mainForm:Section[])=>string)(mainForm);
     }
     else return item.title;
 }
@@ -58,7 +58,7 @@ abstract class AbstractInputBase extends BaseTsxComponent {
 
 export class TextAreaComponent extends AbstractInputBase {
 
-    constructor(private props: IBaseProps & {item:TextAreaItem,section:Section}) {
+    constructor(private props: IBaseProps & {item:TextAreaItem,section:Section,mainForm:Section[]}) {
         super();
     }
 
@@ -79,7 +79,7 @@ export class TextAreaComponent extends AbstractInputBase {
     render(): JSX.Element {
         return (
             <>
-                <div>{getTitle(this.props.item)}</div>
+                <div>{getTitle(this.props.mainForm,this.props.item)}</div>
                 <textarea value={this.props.item.value} onchange={e=>this.setValue(this.props.item,(e.target as HTMLTextAreaElement).value)}/>
 
                 <button className={'tip-button'} onclick={_=>this.openSaveAsTemplateDialog()}>Зберегти як шаблон</button>
@@ -95,7 +95,7 @@ export class DateInputComponent extends AbstractInputBase {
 
     private input:HTMLInputElement;
 
-    constructor(private props: IBaseProps & {item:DateInputItem}) {
+    constructor(private props: IBaseProps & {item:DateInputItem,mainForm:Section[]}) {
         super();
     }
 
@@ -107,7 +107,7 @@ export class DateInputComponent extends AbstractInputBase {
     render(): JSX.Element {
         return (
             <>
-                <div>{getTitle(this.props.item)}</div>
+                <div>{getTitle(this.props.mainForm,this.props.item)}</div>
                 <input
                     ref={el=>this.input = el}
                     value={this.props.item.value}
@@ -119,24 +119,24 @@ export class DateInputComponent extends AbstractInputBase {
 }
 
 
-export const DateInputPrintComponent = (props: IBaseProps & {item:DateInputItem})=>{
+export const DateInputPrintComponent = (props: IBaseProps & {item:DateInputItem,mainForm:Section[]})=>{
     let value = props.item.value;
     if (!value) return <></>;
     value = deCapitalize(removeTailDot(value));
     return (
         <>
-            {`${getTitle(props.item)}: ${value}. `}
+            {`${getTitle(props.mainForm,props.item)}: ${value}. `}
         </>
     );
 }
 
-export const TextAreaPrintComponent = (props: IBaseProps & {item:TextAreaItem,section:Section})=>{
+export const TextAreaPrintComponent = (props: IBaseProps & {item:TextAreaItem,section:Section,mainForm:Section[]})=>{
     let value = props.item.value;
     value = trim(value);
     if (!value) return <></>;
     return (
         <>
-            {getTitle(props.item)?`${getTitle(props.item)}: `:''}
+            {getTitle(props.mainForm,props.item)?`${getTitle(props.mainForm,props.item)}: `:''}
             {props.item.value && capitalize(removeTailDot(value))+'. '}
         </>
     );
@@ -144,22 +144,22 @@ export const TextAreaPrintComponent = (props: IBaseProps & {item:TextAreaItem,se
 
 export class TextInputComponent extends AbstractInputBase {
 
-    constructor(private props: IBaseProps & {item:TextInputItem}) {
+    constructor(private props: IBaseProps & {item:TextInputItem,mainForm:Section[]}) {
         super();
     }
 
-    public static getValue(item:TextInputItem) {
+    public static getValue(mainForm:Section[],item:TextInputItem) {
         return item.formula===undefined?
                 item.value:
-                item.formula!();
+                item.formula!(mainForm);
     }
 
     render(): JSX.Element {
         const props = this.props;
-        const value = TextInputComponent.getValue(this.props.item);
+        const value = TextInputComponent.getValue(this.props.mainForm,this.props.item);
         return (
             <>
-                <div>{getTitle(this.props.item)}</div>
+                <div>{getTitle(this.props.mainForm,this.props.item)}</div>
                 {
                     props.item.expandable ?
                         <textarea disabled={props.item.formula !== undefined} className={'input'} value={value}
@@ -174,17 +174,17 @@ export class TextInputComponent extends AbstractInputBase {
 
 }
 
-export const TextInputPrintComponent = (props: IBaseProps & {item:TextInputItem})=>{
-    let value = TextInputComponent.getValue(props.item);
+export const TextInputPrintComponent = (props: IBaseProps & {item:TextInputItem,mainForm:Section[]})=>{
+    let value = TextInputComponent.getValue(props.mainForm,props.item);
     if (props.item.expandable) {
         value = trim(value);
     }
     if (!value) return <></>;
     value = removeTailDot(value);
-    if (props.item.capitalize) {
+    if (props.item.transform==='capitalize') {
         value = capitalize(value);
     }
-    else {
+    else if (props.item.transform!=='asIs') {
         value = deCapitalize(value);
     }
     if (props.item.postfix) {
@@ -193,7 +193,7 @@ export const TextInputPrintComponent = (props: IBaseProps & {item:TextInputItem}
     }
     return (
         <>
-            {`${getTitle(props.item)}: ${value}. `}
+            {`${getTitle(props.mainForm,props.item)}: ${value}. `}
         </>
     );
 }
@@ -201,7 +201,7 @@ export const TextInputPrintComponent = (props: IBaseProps & {item:TextInputItem}
 
 export class CheckBoxTextComponent extends AbstractInputBase {
 
-    constructor(private props: IBaseProps & { item: CheckBoxTextItem }) {
+    constructor(private props: IBaseProps & { item: CheckBoxTextItem,mainForm:Section[] }) {
         super();
     }
 
@@ -221,7 +221,7 @@ export class CheckBoxTextComponent extends AbstractInputBase {
         return (
             <>
                 <div>
-                    {getTitle(this.props.item)}
+                    {getTitle(this.props.mainForm,this.props.item)}
                     <input type='checkbox' checked={props.item.value}
                            onchange={e => this.setValue(props.item, (e.target as HTMLInputElement).checked)}/>
                 </div>
@@ -237,11 +237,11 @@ export class CheckBoxTextComponent extends AbstractInputBase {
 
 }
 
-export const CheckBoxTextPrintComponent = (props: IBaseProps & {item:CheckBoxTextItem})=>{
+export const CheckBoxTextPrintComponent = (props: IBaseProps & {item:CheckBoxTextItem,mainForm:Section[]})=>{
     if (!props.item.value) return <></>;
     else return (
         <>
-            {getTitle(props.item)}
+            {getTitle(props.mainForm,props.item)}
             {
                 props.item.customValue ?
                     <>
@@ -258,7 +258,7 @@ export class CheckBoxComponent extends AbstractInputBase {
 
     private id = CheckBoxComponent.cnt++;
 
-    constructor(private props: IBaseProps & { item: CheckBoxItem }) {
+    constructor(private props: IBaseProps & { item: CheckBoxItem, mainForm:Section[] }) {
         super();
     }
 
@@ -273,7 +273,7 @@ export class CheckBoxComponent extends AbstractInputBase {
         return (
             <>
                 <div>
-                    <label htmlFor={'el_'+this.id}>{getTitle(this.props.item)}</label>
+                    <label htmlFor={'el_'+this.id}>{getTitle(this.props.mainForm,this.props.item)}</label>
                 </div>
                 <input id={'el_'+this.id} type='checkbox' checked={props.item.value}
                        onchange={e => this.setValue(props.item, (e.target as HTMLInputElement).checked)}/>
@@ -283,11 +283,11 @@ export class CheckBoxComponent extends AbstractInputBase {
 
 }
 
-export const CheckBoxPrintComponent = (props: IBaseProps & {item:CheckBoxItem})=>{
+export const CheckBoxPrintComponent = (props: IBaseProps & {item:CheckBoxItem,mainForm:Section[]})=>{
     if (!props.item.value) return <></>;
     else return (
         <>
-            {`${getTitle(props.item)}. `}
+            {`${getTitle(props.mainForm,props.item)}. `}
         </>
     );
 }
@@ -306,12 +306,29 @@ export class ComboSelectComponent extends AbstractInputBase {
         });
     }
 
-    constructor(private props: IBaseProps & { item: ComboSelectItem }) {
+    constructor(private props: IBaseProps & { item: ComboSelectItem,mainForm:Section[] }) {
         super();
-        const item = this.props.item;
-        item.valuesMap??={};
-        if (!item.valuesList || !item.valuesList.length) {
+    }
+
+    private setInitialValueIfRequired(item: ComboSelectItem) {
+        if (!item.valuesList) {
             item.valuesList = [];
+            if (item.radioGroups) {
+                for (const group of item.radioGroups) {
+                    item.valuesList.push(group.find(it=>it.isDefault)?.value);
+                }
+            }
+        }
+        if (!item.valuesMap) {
+            item.valuesMap??={};
+            if (item.checks) {
+                for (const check of item.checks) {
+                    if (check.hasCustomText) {
+                        item.valuesMap[check.value] = check.initialCustomText;
+                    }
+                    item.valuesList.push(check.isDefault?check.value:undefined);
+                }
+            }
             if (item.radioGroups) {
                 for (const group of item.radioGroups) {
                     for (const selectItem of group) {
@@ -319,15 +336,6 @@ export class ComboSelectComponent extends AbstractInputBase {
                             item.valuesMap[selectItem.value] = selectItem.initialCustomText;
                         }
                     }
-                    item.valuesList.push(group.find(it=>it.isDefault)?.value);
-                }
-            }
-            if (item.checks) {
-                for (const check of item.checks) {
-                    if (check.hasCustomText) {
-                        item.valuesMap[check.value] = check.initialCustomText;
-                    }
-                    item.valuesList.push(check.isDefault?check.value:undefined);
                 }
             }
         }
@@ -408,11 +416,12 @@ export class ComboSelectComponent extends AbstractInputBase {
 
     render(): JSX.Element {
         const item = this.props.item;
+        this.setInitialValueIfRequired(item);
         const textValue = ComboSelectComponent.getTextValue(item);
         return (
             <>
                 <div>
-                    {getTitle(this.props.item)}
+                    {getTitle(this.props.mainForm,this.props.item)}
                     <div style={{position: 'relative'}}>
                         <input
                             style={{
@@ -484,8 +493,8 @@ export class ComboSelectComponent extends AbstractInputBase {
                                                     {
                                                         check.hasCustomText && item.valuesList?.includes(check.value) &&
                                                         <textarea className={'input'}
-                                                                  value={item.valuesMap![check.value]}
-                                                                  onchange={e => this.setCustomValue(check.value, (e.target as HTMLTextAreaElement).value)}/>
+                                                              value={item.valuesMap![check.value]}
+                                                              onchange={e => this.setCustomValue(check.value, (e.target as HTMLTextAreaElement).value)}/>
                                                     }
                                                 </li>
                                             )}
@@ -503,13 +512,13 @@ export class ComboSelectComponent extends AbstractInputBase {
 
 }
 
-export const CompoSelectPrintComponent = (props: IBaseProps & { item: ComboSelectItem }) => {
+export const CompoSelectPrintComponent = (props: IBaseProps & { item: ComboSelectItem, mainForm:Section[] }) => {
     const item = props.item;
     const text = ComboSelectComponent.getTextValue(item);
     if (!text.length) return <></>;
     return (
         <>
-            {`${getTitle(props.item)}: ${text}. `}
+            {`${getTitle(props.mainForm,props.item)}: ${text}. `}
         </>
     );
 }

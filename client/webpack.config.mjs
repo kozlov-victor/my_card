@@ -24,9 +24,7 @@ class WebpackDonePlugin{
                     copyResourcesToSharp();
                 }
             },10);
-
         });
-
     }
 }
 

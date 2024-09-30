@@ -28,7 +28,7 @@ export class HtmlRendererUtil {
         out.push(`${needIndentationOfClosingTag?'\n'+indent:''}</${node.tagName}>`);
     }
 
-    public render(mainForm:Section[]) {
+    public render(mainForm:Section[], printType:'simple'|'branded') {
         //language=CSS
         const css = `
             @page {
@@ -74,8 +74,9 @@ export class HtmlRendererUtil {
                     <style>{css}</style>
                 </head>
                 <body>
+                {printType==='branded' && 'тут буде фірмовий бланк'}
                 {mainForm.map(section=>
-                    <SectionPrintComponent section={section}/>
+                    <SectionPrintComponent mainForm={mainForm} section={section}/>
                 )}
                 </body>
             </html>
