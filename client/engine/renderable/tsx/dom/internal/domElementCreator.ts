@@ -104,7 +104,7 @@ export class DomElementCreator extends AbstractElementCreator<HTMLElementWrap>{
                     if (key==='htmlFor') attrName = 'for';
                     else if (key==='className') attrName = 'class';
                     else if (key==='ref') {
-                        virtualNode.props.ref(el);
+                        props.ref!(el);
                     }
 
                     if (ELEMENT_PROPERTIES.indexOf(key)>-1) { // property

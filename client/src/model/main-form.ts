@@ -820,15 +820,11 @@ export const createMainForm = ()=>{
                     title: '',
                     type: 'textArea',
                 },
-            ]
-        },
-        {
-            title: '',
-            isSubBlock: true,
-            items: [
                 {
                     title: 'Лікар',
                     type: 'textInput',
+                    transform: 'asIs',
+                    withNewLine: true,
                     expandable: true
                 },
             ]

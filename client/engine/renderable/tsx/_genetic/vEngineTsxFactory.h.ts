@@ -63,14 +63,15 @@ export class VEngineTsxFactory {
 
         if ((item as any).__VEngineTsxComponent) {
             const uuid = getComponentUuid(props);
+            let instance:BaseTsxComponent;
             if (VEngineTsxFactory.componentInstances[uuid]) {
-                const instance = VEngineTsxFactory.componentInstances[uuid];
+                instance = VEngineTsxFactory.componentInstances[uuid];
                 return this.renderComponent(instance,propsWithChildren);
             } else {
-                const instance = new (item as any)(propsWithChildren) as BaseTsxComponent;
+                instance = new (item as any)(propsWithChildren) as BaseTsxComponent;
                 VEngineTsxFactory.componentInstances[uuid] = instance;
-                return this.renderComponent(instance,propsWithChildren);
             }
+            return this.renderComponent(instance,propsWithChildren);
         }
         else if ((item as (props:Record<string, any>)=>VirtualNode).call!==undefined) {
             return (item as (arg: any) => VirtualNode)(propsWithChildren);

@@ -195,6 +195,7 @@ export const TextInputPrintComponent = (props: IBaseProps & {item:TextInputItem,
     }
     return (
         <>
+            {props.item.withNewLine && <br/>}
             {`${getTitle(props.mainForm,props.item)}: ${value}. `}
         </>
     );

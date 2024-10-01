@@ -25,6 +25,7 @@ export interface TextInputItem extends ItemBase {
     type: 'textInput';
     expandable?: true;
     transform?:'capitalize'|'asIs';
+    withNewLine?:true;
     postfix?:string;
     formula?:(mainForm:Section[])=>string;
 }
