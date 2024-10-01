@@ -11,13 +11,33 @@ import {TabInteractor} from "./utils/tab-interactor";
 import {Section} from "./model/model";
 import {createMainForm, getValue, setValue} from "./model/main-form";
 import {PromptDialog} from "./components/dialogs/prompt-dialog";
+import {BaseTsxComponent} from "@engine/renderable/tsx/base/baseTsxComponent";
 
+class Test extends BaseTsxComponent{
+
+    @Reactive.Property()
+    private cnt = 0;
+
+    render(): JSX.Element {
+        return (
+            <>
+                <div>{this.cnt}</div>
+                <button onclick={_=>this.cnt++}>inc</button>
+            </>
+        );
+    }
+
+
+}
 
 export class MainWidget extends DomRootComponent {
 
     private serializeUtil = new SerializeUtil();
     private htmlRenderUtil = new HtmlRendererUtil();
     private mainForm:Section[] = [];
+
+    @Reactive.Property()
+    private cnt = 0;
 
     @Reactive.Method()
     override async onMounted() {
@@ -75,6 +95,14 @@ export class MainWidget extends DomRootComponent {
                         section={section}/>)
                 }
                 <Dialogs/>
+                {/*<button onclick={_=>this.cnt++}></button>*/}
+                {/*{this.cnt%2===0 &&*/}
+                {/*    <div>*/}
+                {/*        cnt%2===0*/}
+                {/*    </div>*/}
+                {/*}*/}
+                {/*<Test/>*/}
+                {/*<Test/>*/}
             </>
         );
     }
@@ -94,7 +122,11 @@ export class PrintWidget extends DomRootComponent{
     render(): JSX.Element {
         return (
             <div style={{textAlign: 'center', paddingTop: '300px'}}>
-                Готуємо документ до друку...
+                {
+                    window.name==='pdf'?
+                        'Готуємо документ до друку...':
+                        'Ця сторінка відкрита некоректно. Закрийте її та скористайтесь кнопкою "Друк"'
+                }
             </div>
         );
     }

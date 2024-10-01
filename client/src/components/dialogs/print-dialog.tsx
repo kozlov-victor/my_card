@@ -50,7 +50,7 @@ export class PrintDialog extends BaseTsxComponent {
                     </ul>
                     <a
                         onclick={_ => this.ref.close(this.printType)}
-                        target={'_blank'}
+                        target={'pdf'}
                         className={'button-like'}
                         href={'/?prepareDocument'}>
                         Сформувати pdf

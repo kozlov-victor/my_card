@@ -32,7 +32,7 @@ export class HtmlRendererUtil {
         //language=CSS
         const css = `
             @page {
-                margin: 40mm 17mm 17mm 17mm;
+                margin: 10mm 10mm 10mm 10mm;
                 size: A4 portrait;
             }
 

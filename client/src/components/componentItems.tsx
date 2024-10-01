@@ -12,8 +12,9 @@ import {BaseTsxComponent} from "@engine/renderable/tsx/base/baseTsxComponent";
 import {Reactive} from "@engine/renderable/tsx/decorator/reactive";
 import {AddMyTemplateDialog} from "./dialogs/add-my-template-dialog";
 import {HttpClient} from "../httpClient";
-import {ShowMyTemplatesDialog} from "./dialogs/show-my-templates-dialog";
+import {ITemplate, ShowMyTemplatesDialog} from "./dialogs/show-my-templates-dialog";
 import {InputMask} from "../utils/input-mask";
+import {ActionButton} from "./action-button";
 
 const getTitle = (mainForm:Section[],item:ItemBase)=>{
     if (item.title!==undefined && (item.title as ()=>string).call!==undefined) {
@@ -71,7 +72,8 @@ export class TextAreaComponent extends AbstractInputBase {
 
     @Reactive.Method()
     private async openShowMyTemplatesDialog() {
-        const resp = await ShowMyTemplatesDialog.open(this.props.section.title);
+        const templates = await HttpClient.post<ITemplate[]>('/get-my-templates',{name:this.props.section.title})
+        const resp = await ShowMyTemplatesDialog.open(this.props.section.title, templates);
         if (!resp) return;
         this.props.item.value = resp;
     }
@@ -82,8 +84,8 @@ export class TextAreaComponent extends AbstractInputBase {
                 <div>{getTitle(this.props.mainForm,this.props.item)}</div>
                 <textarea value={this.props.item.value} onchange={e=>this.setValue(this.props.item,(e.target as HTMLTextAreaElement).value)}/>
 
-                <button className={'tip-button'} onclick={_=>this.openSaveAsTemplateDialog()}>Зберегти як шаблон</button>
-                <button className={'tip-button'} onclick={_=>this.openShowMyTemplatesDialog()}>Мої шаблони</button>
+                <ActionButton trackBy={this.props.trackBy} action={()=>this.openSaveAsTemplateDialog()}>Зберегти як шаблон</ActionButton>
+                <ActionButton trackBy={this.props.trackBy} action={()=>this.openShowMyTemplatesDialog()}>Мої шаблони</ActionButton>
 
             </>
         );

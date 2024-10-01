@@ -21,9 +21,9 @@ export const getComponentUuid = (props:Record<string, any>)=>{
 }
 
 
-export class VEngineTsxFactory<T> {
+export class VEngineTsxFactory {
 
-    private static componentInstances:Record<number, BaseTsxComponent> = {};
+    private static componentInstances:Record<string, BaseTsxComponent> = {};
 
     private static renderComponent(instance:BaseTsxComponent,props: Record<string, any>) {
         (instance as any).props = props;
@@ -88,8 +88,8 @@ export class VEngineTsxFactory<T> {
 
     public static clearCachedInstance(props:Record<string, any>) {
         if (!props) return;
-        // const uuid = getComponentUuid(props);
-        // delete this.componentInstances[uuid];
+        const uuid = getComponentUuid(props);
+        delete this.componentInstances[uuid];
     }
 
     public static createFragment({children}:{children: VirtualNode[]}):VirtualFragment {

@@ -24,7 +24,7 @@ export class TabInteractor {
                 localStorage.removeItem(key);
                 fn();
             }
-        },10_000);
+        },5_000);
 
     }
 

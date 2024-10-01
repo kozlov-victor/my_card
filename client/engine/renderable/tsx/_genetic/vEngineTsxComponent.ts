@@ -17,7 +17,7 @@ export abstract class VEngineTsxComponent extends BaseTsxComponent {
     ) {
         super();
         if (VEngineTsxRootHolder.ROOT) {
-            // collect garbage from ald root component
+            // collect garbage from old root component
             VEngineTsxFactory.clean();
         }
         VEngineTsxRootHolder.ROOT = this;
@@ -37,10 +37,6 @@ export abstract class VEngineTsxComponent extends BaseTsxComponent {
         this.rootNativeElement = root;
         this._triggerRendering();
         this.onMounted();
-    }
-
-    public destroy():void {
-        VEngineTsxFactory.destroyElement(this.rootVirtualElement);
     }
 
 }
