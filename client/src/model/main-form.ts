@@ -446,6 +446,34 @@ export const createMainForm = ()=>{
             ]
         },
         {
+            title: 'Спірометрія',
+            isSubBlock: true,
+            items: [
+                {
+                    title: 'Дата',
+                    type: 'dateInput',
+                    value: formatDate(new Date()),
+                },
+                {
+                    title: 'FEV1',
+                    type: 'textInput',
+                },
+                {
+                    title: 'FVC',
+                    type: 'textInput',
+                },
+                {
+                   title: '',
+                   type: 'staticText',
+                   value: 'Розглянуто відповідно до вимог ATS/ERS',
+                },
+                {
+                    title: 'Заключення',
+                    type: 'textArea',
+                },
+            ]
+        },
+        {
             title: 'Органи кровообігу',
             isSubBlock: true,
             items: [

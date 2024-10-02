@@ -3,7 +3,7 @@ import {
     CheckBoxItem,
     CheckBoxTextItem,
     ComboSelectItem, DateInputItem,
-    ItemBase,
+    ItemBase, StaticTextItem,
     Section,
     TextAreaItem,
     TextInputItem
@@ -15,7 +15,7 @@ import {
     CheckBoxTextComponent,
     CheckBoxTextPrintComponent,
     ComboSelectComponent,
-    CompoSelectPrintComponent, DateInputComponent, DateInputPrintComponent,
+    CompoSelectPrintComponent, DateInputComponent, DateInputPrintComponent, StaticTextComponent,
     TextAreaComponent,
     TextAreaPrintComponent,
     TextInputComponent,
@@ -50,6 +50,10 @@ const getComponentItemByType = (mainForm:Section[],section:Section,item:ItemBase
             <DateInputComponent trackBy={trackBy} mainForm={mainForm} item={item as DateInputItem}/>,
             <DateInputPrintComponent mainForm={mainForm} item={item as DateInputItem}/>
         ]
+        case 'staticText': return [
+            undefined!,
+            <StaticTextComponent mainForm={mainForm} item={item as StaticTextItem}/>
+        ]
         default: throw new Error(`wrong item type: ${item.type}`);
     }
 }
@@ -68,7 +72,7 @@ export class SectionComponent extends BaseTsxComponent {
                     <>
                         {this.props.section.items.map((block, itemIndex) =>
                             <div
-                                className={`item ${block.type}`}>{getComponentItemByType(this.props.mainForm,this.props.section,block, this.props.trackBy +"_" + itemIndex)[0]}</div>
+                                className={`item ${block.type}`}>{getComponentItemByType(this.props.mainForm,this.props.section,block, this.props.trackBy +"_" + itemIndex)?.[0]}</div>
                         )}
                     </>
                 </section>

@@ -9,7 +9,7 @@ export class PrintDialog extends BaseTsxComponent {
     private ref:Dialog;
 
     @Reactive.Property()
-    private printType:'simple'|'branded' = 'simple';
+    private printType:'simple'|'branded' = 'branded';
 
 
     constructor() {
@@ -29,7 +29,7 @@ export class PrintDialog extends BaseTsxComponent {
                     Оберіть тип бланку
                     <ul style={{margin:'0 auto', width: '100px'}}>
                         {
-                            [{type:'simple',text:'Звичайний'} as const,{type:'branded',text:'Фірмовий'} as const].map(it=>
+                            [{type:'branded',text:'Фірмовий'} as const,{type:'simple',text:'Звичайний'} as const].map(it=>
                                 <li
                                     style={{padding:'0'}}
                                 >

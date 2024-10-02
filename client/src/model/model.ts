@@ -24,6 +24,7 @@ export interface TextInputItem extends ItemBase {
     value?: string;
     type: 'textInput';
     expandable?: true;
+    disabled?:true;
     transform?:'capitalize'|'asIs';
     withNewLine?:true;
     postfix?:string;
@@ -54,12 +55,17 @@ export interface ComboSelectItem extends ItemBase {
     valuesMap?:Record<string, string|undefined>;
 }
 
+export interface StaticTextItem extends ItemBase {
+    type: 'staticText';
+    value?:string;
+}
+
 export interface Section {
     title: string;
     isSubBlock?:true;
     items: (
         TextAreaItem|TextInputItem|
         DateInputItem|CheckBoxTextItem|
-        CheckBoxItem|ComboSelectItem
+        CheckBoxItem|ComboSelectItem|StaticTextItem
         )[];
 }

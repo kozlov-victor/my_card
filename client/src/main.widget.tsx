@@ -75,7 +75,7 @@ export class MainWidget extends DomRootComponent {
         const printType = await PrintDialog.open();
         if (printType!==undefined) {
             const html = this.htmlRenderUtil.render(this.mainForm, printType);
-            console.log(html);
+            //console.log(html);
             await HttpClient.post('/save-print-session',{html});
             TabInteractor.trigger();
         }

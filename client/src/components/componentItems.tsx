@@ -4,7 +4,7 @@ import {
     ItemBase, ComboSelectItem,
     Section,
     TextAreaItem,
-    TextInputItem, SelectItem2, DateInputItem
+    TextInputItem, SelectItem2, DateInputItem, StaticTextItem
 } from "../model/model";
 import {IBaseProps} from "@engine/renderable/tsx/_genetic/virtualNode";
 import {VEngineTsxFactory} from "@engine/renderable/tsx/_genetic/vEngineTsxFactory.h";
@@ -522,6 +522,17 @@ export const CompoSelectPrintComponent = (props: IBaseProps & { item: ComboSelec
     return (
         <>
             {`${getTitle(props.mainForm,props.item)}: ${text}. `}
+        </>
+    );
+}
+
+export const StaticTextComponent = (props: IBaseProps & { item: StaticTextItem, mainForm:Section[] })=>{
+    const item = props.item;
+    if (!item.value) return <></>;
+    const value = removeTailDot(item.value);
+    return (
+        <>
+            {value+'. '}
         </>
     );
 }
