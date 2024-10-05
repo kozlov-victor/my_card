@@ -11,33 +11,13 @@ import {TabInteractor} from "./utils/tab-interactor";
 import {Section} from "./model/model";
 import {createMainForm, getValue, setValue} from "./model/main-form";
 import {PromptDialog} from "./components/dialogs/prompt-dialog";
-import {BaseTsxComponent} from "@engine/renderable/tsx/base/baseTsxComponent";
-
-class Test extends BaseTsxComponent{
-
-    @Reactive.Property()
-    private cnt = 0;
-
-    render(): JSX.Element {
-        return (
-            <>
-                <div>{this.cnt}</div>
-                <button onclick={_=>this.cnt++}>inc</button>
-            </>
-        );
-    }
-
-
-}
+import {version} from "./version.json"
 
 export class MainWidget extends DomRootComponent {
 
     private serializeUtil = new SerializeUtil();
     private htmlRenderUtil = new HtmlRendererUtil();
     private mainForm:Section[] = [];
-
-    @Reactive.Property()
-    private cnt = 0;
 
     @Reactive.Method()
     override async onMounted() {
@@ -76,7 +56,7 @@ export class MainWidget extends DomRootComponent {
         if (printType!==undefined) {
             const html = this.htmlRenderUtil.render(this.mainForm, printType);
             //console.log(html);
-            await HttpClient.post('/save-print-session',{html});
+            await HttpClient.post('/save-print-session',html, 'text/plain');
             TabInteractor.trigger();
         }
     }
@@ -86,23 +66,16 @@ export class MainWidget extends DomRootComponent {
             <>
                 <button onclick={this.saveSession}>Зберігти сесію</button>
                 <button onclick={this.openPrintDialog}>Друк</button>
-                <div style={{width:'25px',display:'inline-block'}}/>
+                <div style={{width: '25px', display: 'inline-block'}}/>
                 <button onclick={this.openNewSessionDialog}>Нове звернення</button>
-                {this.mainForm.map((section,index)=>
+                <div style={{display: 'inline-block', cssFloat: 'right', fontSize: '10px',color:'gray'}}>{version}</div>
+                {this.mainForm.map((section, index) =>
                     <SectionComponent
                         mainForm={this.mainForm}
-                        trackBy={''+index}
+                        trackBy={'' + index}
                         section={section}/>)
                 }
                 <Dialogs/>
-                {/*<button onclick={_=>this.cnt++}></button>*/}
-                {/*{this.cnt%2===0 &&*/}
-                {/*    <div>*/}
-                {/*        cnt%2===0*/}
-                {/*    </div>*/}
-                {/*}*/}
-                {/*<Test/>*/}
-                {/*<Test/>*/}
             </>
         );
     }

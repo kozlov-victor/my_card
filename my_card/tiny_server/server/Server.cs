@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -17,9 +19,9 @@ namespace tinyServer.server
         public static readonly ControllerRegistry ControllerRegistry = new ControllerRegistry();
 
         // run server
-        public Server(int Port)
+        public Server(int port)
         {
-            Listener = new TcpListener(IPAddress.Any, Port); // create listener
+            Listener = new TcpListener(IPAddress.Any, port); // create listener
             Listener.Start(); // run it
         }
 
@@ -39,7 +41,6 @@ namespace tinyServer.server
             }
         }
 
-       
         ~Server()
         {
             if (Listener != null)

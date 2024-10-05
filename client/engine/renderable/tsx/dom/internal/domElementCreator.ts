@@ -72,6 +72,13 @@ export class DomElementCreator extends AbstractElementCreator<HTMLElementWrap>{
                 (el as Text).data = virtualTextNode.text;
             }
         } else {
+
+            if (!props) {
+                console.error(`something is wrong with this node`);
+                console.error({virtualNode, parent});
+                return;
+            }
+
             const htmlEl = el as HTMLElement;
             for (const key of Object.keys(props)) {
                 if (key.indexOf('on')===0) {// events

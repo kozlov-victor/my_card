@@ -60,14 +60,13 @@ namespace my_card.controller
         [RequestAttribute(Url = "/save-print-session", Method = "POST")]
         public void SavePrintSession(Request req, Response resp)
         {
-            var html = req.BodyJSON["html"].ToString();
+            var html = req.BodyText;
             FileUtil.CreateFile("print-session", html);
         }
 
         [RequestAttribute(Url = "/pdf", Method = "GET")]
         public void Test(Request req, Response resp)
         {
-
             var html = FileUtil.ReadFile("print-session", "no data to print");
             resp.WriteByteArray(pdfUtil.Create(html),"application/pdf");
         }

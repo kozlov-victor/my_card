@@ -15,13 +15,14 @@ import {
     CheckBoxTextComponent,
     CheckBoxTextPrintComponent,
     ComboSelectComponent,
-    CompoSelectPrintComponent, DateInputComponent, DateInputPrintComponent, StaticTextComponent,
+    CompoSelectPrintComponent, DateInputComponent, DateInputPrintComponent, getSectionTitle, StaticTextComponent,
     TextAreaComponent,
     TextAreaPrintComponent,
     TextInputComponent,
     TextInputPrintComponent
 } from "./componentItems";
 import {BaseTsxComponent} from "@engine/renderable/tsx/base/baseTsxComponent";
+import {Reactive} from "@engine/renderable/tsx/decorator/reactive";
 
 
 const getComponentItemByType = (mainForm:Section[],section:Section,item:ItemBase,trackBy:string):[JSX.Element,JSX.Element]=>{
@@ -64,16 +65,44 @@ export class SectionComponent extends BaseTsxComponent {
         super();
     }
 
+    @Reactive.Method()
+    private triggerCollapsible(checked:boolean) {
+        if (this.props.section.collapsible) {
+            this.props.section.collapsible.currentValue = checked;
+        }
+    }
+
     render(): JSX.Element  {
+        const sectionTitle = getSectionTitle(this.props.section.title,'ui');
         return (
             <>
                 <section>
-                    <div className={this.props.section.isSubBlock?'':'title'}>{this.props.section.title}</div>
+                    {sectionTitle && <div className={'title'}>{sectionTitle}</div>}
                     <>
-                        {this.props.section.items.map((block, itemIndex) =>
-                            <div
-                                className={`item ${block.type}`}>{getComponentItemByType(this.props.mainForm,this.props.section,block, this.props.trackBy +"_" + itemIndex)?.[0]}</div>
-                        )}
+                        {this.props.section.subTitle && <div className={'sub-title'}>
+                            {
+                                this.props.section.collapsible &&
+                                <input
+                                    id={`section_${this.props.trackBy}`}
+                                    style={{margin: '0px 10px 0 0'}}
+                                    onchange={e => this.triggerCollapsible((e.target as HTMLInputElement).checked)}
+                                    type={'checkbox'}
+                                    checked={this.props.section.collapsible?.currentValue}/>
+                            }
+                            <label htmlFor={this.props.section.collapsible?`section_${this.props.trackBy}`:undefined}>
+                                {this.props.section.subTitle}
+                            </label>
+                        </div>}
+                        {(this.props.section.collapsible === undefined || this.props.section.collapsible.currentValue) &&
+                            <>
+                                {this.props.section.items.map((block, itemIndex) =>
+                                    <div
+                                        className={`item ${block.type}`}>
+                                        {getComponentItemByType(this.props.mainForm,this.props.section,block, this.props.trackBy +"_" + itemIndex)?.[0]}
+                                    </div>
+                                )}
+                            </>
+                        }
                     </>
                 </section>
             </>
@@ -83,12 +112,19 @@ export class SectionComponent extends BaseTsxComponent {
 }
 
 export const SectionPrintComponent = (props: IBaseProps & {section:Section, mainForm: Section[]})=>{
+    const sectionTitle = getSectionTitle(props.section.title,'print');
     return (
         <div className={'no-break'}>
-            <div className={props.section.isSubBlock?'sub-title':'title'}>{props.section.title}</div>
-            {props.section.items.map(item =>
-                getComponentItemByType(props.mainForm, props.section, item, '')[1]
-            )}
+            {sectionTitle && <div className={'title'}>{sectionTitle}</div>}
+            {
+                (props.section.collapsible===undefined || props.section.collapsible.currentValue) &&
+                <>
+                    {props.section.subTitle && <div className={'sub-title'}>{props.section.subTitle}</div>}
+                    {props.section.items.map(item =>
+                        getComponentItemByType(props.mainForm, props.section, item, '')[1]
+                    )}
+                </>
+            }
         </div>
     );
 }

@@ -10,6 +10,7 @@ const copyResourcesToSharp = ()=>{
     fs.writeFileSync('../my_card/bin/Debug/index.html',indexHtml);
 
     fs.copyFileSync('./out/index.js','../my_card/bin/Debug/index.js');
+    fs.copyFileSync('./src/version.json','./out/version.json');
 
 }
 
@@ -60,6 +61,12 @@ export default async (env = {})=>{
         },
         module: {
             rules: [
+                {
+                    test: /\.txt/,
+                    use: [
+                        {loader: "txt/txt-loader",options: {}},
+                    ]
+                },
                 {
                     test: /\.(png|jpe?g)$/,
                     use: [

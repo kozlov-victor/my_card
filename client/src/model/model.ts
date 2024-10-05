@@ -24,6 +24,7 @@ export interface TextInputItem extends ItemBase {
     value?: string;
     type: 'textInput';
     expandable?: true;
+    allowedSymbols?:string[],
     disabled?:true;
     transform?:'capitalize'|'asIs';
     withNewLine?:true;
@@ -61,8 +62,12 @@ export interface StaticTextItem extends ItemBase {
 }
 
 export interface Section {
-    title: string;
-    isSubBlock?:true;
+    title?: string|((renderType:'ui'|'print')=>string);
+    subTitle?:string;
+    collapsible?: {
+        isCollapsible: true,
+        currentValue: boolean
+    },
     items: (
         TextAreaItem|TextInputItem|
         DateInputItem|CheckBoxTextItem|

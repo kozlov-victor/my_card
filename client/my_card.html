@@ -16,6 +16,9 @@
           h1 {
               background-color: var(--theme-color);
           }
+          #version {
+              color: green;
+          }
       }
     </style>
 </head>
@@ -44,8 +47,30 @@
 </ul>
 
 <div>
-    Якщо програма вже встановлена, але Ви хочете встановити нову версію, просто видаліть папку, куди Ви раніше розпакували архів, та повторіть інструкцію знову
+    Якщо програма вже встановлена, але Ви хочете встановити нову версію, просто:
+    <ul>
+        <li>Зупиніть програму, якщо вона запущена</li>
+        <li>Видаліть папку, куди Ви раніше розпакували архів</li>
+        <li>Повторіть інструкцію по встановленню знову</li>
+    </ul>
 </div>
+
+<div>
+    Поточна версія: <span id="version"></span>
+</div>
+
+<script>
+    fetch(`./version.json?r=${new Date().getTime()}`, {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(response => {
+        document.getElementById('version').textContent = response.version;
+    });
+</script>
 
 </body>
 </html>

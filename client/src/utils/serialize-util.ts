@@ -2,14 +2,23 @@ import {ItemBase, Section} from "../model/model";
 
 export class SerializeUtil {
 
-    private calculateKey(s:Section, i:ItemBase) {
-        const title = (i.title as ()=>string).call!==undefined?
-            (i.title as ()=>string).toString().substring(1,5):
-            i.title;
-        return `${s.title ?? ''}:${title ?? ''}`;
+    private readonly fnBodyHashStart = 8;
+    private readonly fnBodyHashEnd = 8;
+
+    private calculateSectionKey(s:Section): string {
+        const title = (s.title as ()=>string)?.call!==undefined?
+            (s.title as ()=>string).toString().substring(this.fnBodyHashStart,this.fnBodyHashStart+this.fnBodyHashEnd): s.title;
+        return (title as string) ?? s.subTitle ?? '';
     }
 
-    private copyProperties(from:any,to:any) {
+    private calculateItemKey(s:Section, i:ItemBase) {
+        const title = (i.title as ()=>string).call!==undefined?
+            (i.title as ()=>string).toString().substring(this.fnBodyHashStart,this.fnBodyHashStart+this.fnBodyHashEnd):
+            i.title;
+        return `${this.calculateSectionKey(s) ?? ''}:${title ?? ''}`;
+    }
+
+    private copyItemProperties(from:any,to:any) {
         if (from.value) {
             to.value = from.value;
         }
@@ -24,13 +33,22 @@ export class SerializeUtil {
         }
     }
 
+    private copySectionProperties(from:any,to:any) {
+        if (from.collapsible) {
+            to.collapsible = from.collapsible;
+        }
+    }
+
     public serialize(mainForm:Section[]) {
         const result:Record<string, any> = {};
         for (const s of mainForm) {
+            const sectionKey = this.calculateSectionKey(s);
+            result[sectionKey] = {};
+            this.copySectionProperties(s, result[sectionKey]);
             for (const i of s.items as any[]) {
-                const key = this.calculateKey(s,i);
-                result[key] = {};
-                this.copyProperties(i,result[key]);
+                const itemKey = this.calculateItemKey(s,i);
+                result[itemKey] = {};
+                this.copyItemProperties(i,result[itemKey]);
             }
         }
         return result;
@@ -39,22 +57,27 @@ export class SerializeUtil {
     public deserialize(mainForm: Section[],session:any) {
         const result:Record<string, any> = {};
         for (const s of mainForm) {
+            const sectionKey = this.calculateSectionKey(s);
+            const sectionValue = session[sectionKey];
+            if (sectionValue) {
+                this.copySectionProperties(sectionValue,s);
+            }
             for (const i of s.items as any[]) {
-                const key = this.calculateKey(s,i);
-                const val = session[key];
-                if (!val) continue;
-                this.copyProperties(val,i);
-                if (val.value) {
-                    i.value = val.value;
+                const itemKey = this.calculateItemKey(s,i);
+                const itemValue = session[itemKey];
+                if (!itemValue) continue;
+                this.copyItemProperties(itemValue,i);
+                if (itemValue.value) {
+                    i.value = itemValue.value;
                 }
-                if (val.valuesList) {
-                    i.valuesList = val.valuesList;
+                if (itemValue.valuesList) {
+                    i.valuesList = itemValue.valuesList;
                 }
-                if (val.valuesMap) {
-                    i.valuesMap = val.valuesMap;
+                if (itemValue.valuesMap) {
+                    i.valuesMap = itemValue.valuesMap;
                 }
-                if (val.customValue) {
-                    i.customValue = val.customValue;
+                if (itemValue.customValue) {
+                    i.customValue = itemValue.customValue;
                 }
             }
         }

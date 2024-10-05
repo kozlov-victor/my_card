@@ -24,10 +24,7 @@ interface IRequestData<T> {
     method: string;
     data?: string|number|FormData|IKeyVal<string|number|boolean>;
     url: string;
-    success?: (arg:T)=>void;
-    error?: (opts:{status:number,error:string,response:any})=>void;
-    setup?: (xhr:XMLHttpRequest)=>void;
-    requestType?: 'multipart/form-data'|'application/json'|'application/x-www-form-urlencoded'|string;
+    contentType?: 'multipart/form-data'|'application/json'|'application/x-www-form-urlencoded'|string;
     timeout?: number;
     ontimeout?: ()=>void;
     headers?:Record<string, string>;
@@ -55,15 +52,12 @@ export namespace HttpClient {
                 if ( (xhr.status>=200 && xhr.status<=299) || xhr.status===0) {
                     let resp = xhr.responseText;
                     const contentType = xhr.getResponseHeader("Content-Type")||'';
-                    if (contentType.toLowerCase().indexOf('json')>-1 && resp && resp.substr!==undefined) {
+                    if (contentType.toLowerCase().indexOf('json')>-1 && resp?.substr!==undefined) {
                         try {
                             resp = JSON.parse(resp);
                         } catch (e) {
                             console.log(e);
                         }
-                    }
-                    if (data.success) {
-                        data.success(resp as unknown as T);
                     }
                     resolveFn(resp as unknown as T);
                 } else {
@@ -73,7 +67,6 @@ export namespace HttpClient {
                     } catch (e) {
                         response = xhr.response;
                     }
-                    if (data.error) data.error({status:xhr.status,error:xhr.statusText,response});
                     rejectFn(response);
                 }
                 clearTimeout(abortTmr);
@@ -81,10 +74,9 @@ export namespace HttpClient {
             }
         };
         xhr.open(data.method,data.url,true);
-        if (data.setup) data.setup(xhr);
-        if (data.requestType) {
-            if (data.requestType!=='multipart/form-data') // in this case header needs to be auto generated
-                xhr.setRequestHeader("Content-Type", data.requestType);
+        if (data.contentType) {
+            if (data.contentType!=='multipart/form-data') // in this case header needs to be auto generated
+                xhr.setRequestHeader("Content-Type", data.contentType);
         } else {
             xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         }
@@ -93,7 +85,7 @@ export namespace HttpClient {
                 xhr.setRequestHeader(key,data.headers![key]);
             });
         }
-        if (data.requestType==='application/json')
+        if (data.contentType==='application/json')
             data.data = data.data && JSON.stringify(data.data);
         xhr.send(data.data as unknown as string);
         if (data.timeout) {
@@ -107,30 +99,27 @@ export namespace HttpClient {
         return promise as Promise<T>;
     };
 
-    export const get = <T>(url:string,data?:IKeyVal<string|number|boolean>,success?:(arg:T)=>void,error?:(opts:{status:number,error:string})=>void,setup?:(xhr:XMLHttpRequest)=>void):Promise<T>=>{
+    export const get = <T>(url:string,data?:IKeyVal<string|number|boolean>, contentType = undefined, headers:Record<string, string> = {}):Promise<T>=>{
         return request<T>({
             method:'get',
             url,
             data,
-            success,
-            error,
-            setup,
+            contentType,
+            headers
         });
     };
 
-    export const  post = <T>(url:string,data?:any,success?:(arg:T)=>void,error?:(opts:{status:number,error:string})=>void,setup?:(xhr:XMLHttpRequest)=>void):Promise<T>=>{
+    export const post = <T>(url:string,data?:any, contentType = 'application/json', headers:Record<string, string> = {}):Promise<T>=>{
         return request<T>({
             method:'post',
             url,
             data,
-            requestType:'application/json',
-            success,
-            error,
-            setup,
+            contentType,
+            headers
         });
     };
 
-    export const  postMultiPart = <T>(url:string,file:File,data:IKeyVal<string|number|boolean>,success?:(arg:T)=>void,error?:(opts:{status:number,error:string})=>void,setup?:(xhr:XMLHttpRequest)=>void):Promise<T>=>{
+    export const postMultiPart = <T>(url:string,file:File,data:IKeyVal<string|number|boolean>, contentType = 'multipart/form-data', headers:Record<string, string> = {}):Promise<T>=>{
         const formData = new FormData();
         Object.keys(data).forEach((key)=>{
             formData.append(key,data[key] as string);
@@ -141,10 +130,8 @@ export namespace HttpClient {
             method:'post',
             url,
             data: formData,
-            requestType:'multipart/form-data',
-            success,
-            error,
-            setup,
+            contentType,
+            headers
         });
     };
 

@@ -89,6 +89,10 @@ namespace tinyServer.request
                         Console.Error.WriteLine(e.StackTrace);
                     }
                 }
+                else if (contentType == "text/plain")
+                {
+                    request.BodyText = reqBody;
+                }
                 else if (contentType?.StartsWith("multipart/form-data") ?? false)
                 {
                     var multipartParser = new MultipartParser();
@@ -97,7 +101,7 @@ namespace tinyServer.request
                     request.BodyUrlEncoded = dict;
                     request.multipartFiles = files;
                 }
-                else
+                else if (contentType == "application/x-www-form-urlencoded")
                 {
                     request.BodyUrlEncoded = ParseQueryString(reqBody);
                 }

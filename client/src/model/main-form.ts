@@ -1,6 +1,8 @@
 import {Section} from "./model";
 import {formatDate, parseDate} from "../utils/date-util";
 
+const BASIC_NUMERIC_SYMBOLS = '01234567890,.'.split('');
+
 export const createMainForm = ()=>{
     const mainForm:Section[] = [
         {
@@ -175,12 +177,14 @@ export const createMainForm = ()=>{
                 {
                     title: 'Вага тіла',
                     type: 'textInput',
+                    allowedSymbols: BASIC_NUMERIC_SYMBOLS,
                     value: '',
                     postfix: 'кг',
                 },
                 {
                     title: 'Зріст',
                     type: 'textInput',
+                    allowedSymbols: BASIC_NUMERIC_SYMBOLS,
                     postfix: 'см',
                 },
                 {
@@ -197,6 +201,7 @@ export const createMainForm = ()=>{
                 {
                     title: 'Температура тіла',
                     type: 'textInput',
+                    allowedSymbols: BASIC_NUMERIC_SYMBOLS,
                     value: '36.6',
                     postfix: '°C'
                 },
@@ -356,15 +361,16 @@ export const createMainForm = ()=>{
             ],
         },
         {
-            title: 'Органи дихання',
-            isSubBlock: true,
+            subTitle: 'Органи дихання',
             items: [
                 {
                     title: 'Sp02',
+                    allowedSymbols: BASIC_NUMERIC_SYMBOLS,
                     type: 'textInput',
                 },
                 {
                     title: 'ЧД',
+                    allowedSymbols: BASIC_NUMERIC_SYMBOLS,
                     type: 'textInput',
                     postfix: 'на хв.'
                 },
@@ -446,36 +452,7 @@ export const createMainForm = ()=>{
             ]
         },
         {
-            title: 'Спірометрія',
-            isSubBlock: true,
-            items: [
-                {
-                    title: 'Дата',
-                    type: 'dateInput',
-                    value: formatDate(new Date()),
-                },
-                {
-                    title: 'FEV1',
-                    type: 'textInput',
-                },
-                {
-                    title: 'FVC',
-                    type: 'textInput',
-                },
-                {
-                   title: '',
-                   type: 'staticText',
-                   value: 'Розглянуто відповідно до вимог ATS/ERS',
-                },
-                {
-                    title: 'Заключення',
-                    type: 'textArea',
-                },
-            ]
-        },
-        {
-            title: 'Органи кровообігу',
-            isSubBlock: true,
+            subTitle: 'Органи кровообігу',
             items: [
                 {
                     title: 'Видима пульсація артерій',
@@ -571,11 +548,13 @@ export const createMainForm = ()=>{
                 {
                     title: 'ЧСС',
                     type: 'textInput',
+                    allowedSymbols: BASIC_NUMERIC_SYMBOLS,
                     postfix: 'уд/хв',
                 },
                 {
                     title: 'Пульс',
                     type: 'textInput',
+                    allowedSymbols: BASIC_NUMERIC_SYMBOLS,
                     postfix: 'уд/хв',
                 },
                 {
@@ -591,8 +570,7 @@ export const createMainForm = ()=>{
             ]
         },
         {
-            title: 'Органи травлення',
-            isSubBlock: true,
+            subTitle: 'Органи травлення',
             items: [
                 {
                     title: 'Зів',
@@ -737,7 +715,7 @@ export const createMainForm = ()=>{
                     type: 'comboSelect',
                     radioGroups: [
                         [
-                            {value: 'нармальні', isDefault: true},
+                            {value: 'нормальні', isDefault: true},
                             {value: 'запори', hasCustomText: true, isCustomTextOptional: true},
                             {value: 'діарея', hasCustomText: true, isCustomTextOptional: true},
                         ],
@@ -751,7 +729,7 @@ export const createMainForm = ()=>{
                     type: 'comboSelect',
                     radioGroups: [
                         [
-                            {value: 'звичаний', isDefault: true},
+                            {value: 'звичайний', isDefault: true},
                             {value: 'інше', isLabelPrintable: false, hasCustomText: true},
                         ],
                     ],
@@ -759,8 +737,7 @@ export const createMainForm = ()=>{
             ]
         },
         {
-            title: 'Сечостатева система',
-            isSubBlock: true,
+            subTitle: 'Сечостатева система',
             items: [
                 {
                     title: 'Сечовипускання',
@@ -811,6 +788,63 @@ export const createMainForm = ()=>{
                     checks: [
                         {value: 'інше', isLabelPrintable: false, hasCustomText: true},
                     ]
+                }
+            ]
+        },
+        {
+            title: (type)=>{
+                const title = 'Інструменальні дослідження'
+                if (type==='ui') return title;
+                else {
+                    const hasOpenedSections = !!(
+                        [
+                            findSectionBySubtitle('Спірометрія',mainForm),
+                            findSectionBySubtitle('ЕКГ',mainForm)
+                        ].
+                        find(it=>it.collapsible===undefined || it.collapsible?.currentValue))
+                    return hasOpenedSections?title:undefined!;
+                }
+            },
+            subTitle: 'Спірометрія',
+            collapsible: {
+                isCollapsible: true,
+                currentValue: false
+            },
+            items: [
+                {
+                    title: 'Дата',
+                    type: 'dateInput',
+                    value: formatDate(new Date()),
+                },
+                {
+                    title: 'FEV1',
+                    type: 'textInput',
+                },
+                {
+                    title: 'FVC',
+                    type: 'textInput',
+                },
+                {
+                    title: '',
+                    type: 'staticText',
+                    value: 'Розглянуто відповідно до вимог ATS/ERS',
+                },
+                {
+                    title: 'Заключення',
+                    type: 'textArea',
+                },
+            ]
+        },
+        {
+            subTitle: 'ЕКГ',
+            collapsible: {
+                isCollapsible: true,
+                currentValue: false
+            },
+            items: [
+                {
+                    title: '',
+                    type: 'textArea',
                 }
             ]
         },
@@ -879,4 +913,13 @@ export const setValue = (name:string, value:string, mainForm:Section[])=>{
             }
         }
     }
+}
+
+const findSectionBySubtitle = (subtitle:string, mainForm:Section[])=>{
+    for (const s of mainForm) {
+        if (s.subTitle===subtitle) {
+            return s;
+        }
+    }
+    return undefined!;
 }

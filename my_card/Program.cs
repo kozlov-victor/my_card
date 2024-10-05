@@ -17,7 +17,9 @@ namespace my_card
             Console.WriteLine("Starting...");
             CliUi cliUi = new CliUi();
             int port = 8088;
-            string url = $"http://localhost:{port}";
+            string host = "localhost";
+            string url = $"http://{host}:{port}";
+
             var server = new Server(port);
             cliUi.ShowInfoWindow(new string[] {
                 "--=App has been started=--",
