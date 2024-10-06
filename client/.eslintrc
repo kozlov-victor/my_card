@@ -22,17 +22,14 @@
         "@typescript-eslint/explicit-module-boundary-types": "off",
         "@typescript-eslint/adjacent-overload-signatures": "off",
         "@typescript-eslint/no-var-requires": "off",
+        "@typescript-eslint/no-require-imports": "off",
+        "@typescript-eslint/no-unused-expressions": "off",
         "prefer-const": ["error", {
             "destructuring": "all",
             "ignoreReadBeforeAssign": false
         }],
         "no-case-declarations": "off",
         "no-cond-assign": "off",
-        "@typescript-eslint/ban-ts-comment": "off",
-        "@typescript-eslint/ban-types": ["error", {
-            "types": {
-                "null": "Use 'undefined' instead of 'null'"
-            }
-        }]
+        "@typescript-eslint/ban-ts-comment": "off"
     }
 }

@@ -3,10 +3,15 @@ import {VEngineTsxFactory} from "@engine/renderable/tsx/_genetic/vEngineTsxFacto
 import {VirtualCommentNode, VirtualNode, VirtualTextNode} from "@engine/renderable/tsx/_genetic/virtualNode";
 import {SectionPrintComponent} from "../components/section";
 import {BrandHeader} from "../components/brand-header";
+import {getValue} from "../model/main-form";
 
 export class HtmlRendererUtil {
 
     private selfClosed = ['img', 'input', 'br'];
+
+    private camelToKebab(val:string) {
+        return val.replace(/[A-Z]+(?![a-z])|[A-Z]/g, ($, ofs) => (ofs ? "-" : "") + $.toLowerCase())
+    }
 
     private renderToString(node:VirtualNode, indentNum: number, out: string[]):void {
         const indent = new Array(indentNum).fill('').join('    ');
@@ -19,11 +24,29 @@ export class HtmlRendererUtil {
             return;
         }
         const attr:string[] = [];
-        if (node.props.className) {
-            attr.push(`class="${node.props.className}"`);
-        }
-        if (node.props.src) {
-            attr.push(`src="${node.props.src}"`);
+        for (const key of Object.keys(node.props)) {
+            if (['__id','trackBy','children'].includes(key)) continue;
+            const val = node.props[key];
+            if (key==='className') {
+                attr.push(`class="${val}"`);
+            }
+            else if (key==='style') {
+                const styleObj = val as Record<string, any>;
+                const stls = [] as string[];
+                for (const styleKey of Object.keys(styleObj)) {
+                    stls.push(`${this.camelToKebab(styleKey)}:${styleObj[styleKey]}`);
+                }
+                attr.push(`style="${stls.join(';')}"`);
+            }
+            else if (key==='dataset') {
+                const dataObj = val as Record<string, string>;
+                for (const dataKey of Object.keys(dataObj)) {
+                    attr.push(`data-${this.camelToKebab(dataKey)}="${dataObj[dataKey]}"`);
+                }
+            }
+            else {
+                attr.push(`${key}="${val}"`);
+            }
         }
         let attrFull = attr.join(' ');
         if (attrFull) attrFull = ' ' + attrFull;
@@ -93,7 +116,7 @@ export class HtmlRendererUtil {
         const node =  (
             <html lang="en">
                 <head>
-                    <title></title>
+                    <title>{}</title>
                     <style>{css}</style>
                 </head>
                 <body>

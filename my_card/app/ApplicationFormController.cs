@@ -68,7 +68,8 @@ namespace my_card.controller
         public void Test(Request req, Response resp)
         {
             var html = FileUtil.ReadFile("print-session", "no data to print");
-            resp.WriteByteArray(pdfUtil.Create(html),"application/pdf");
+            resp.WriteByteArray(pdfUtil.Create(html), "application/pdf");
+            resp.Headers.Add("content-disposition", "inline; filename=123.pdf");
         }
 
     }

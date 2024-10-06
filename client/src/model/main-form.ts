@@ -193,7 +193,7 @@ export const createMainForm = ()=>{
                     formula: (mainForm:Section[]) => {
                         const w = +getValue('Вага тіла', mainForm)!;
                         const h = +getValue('Зріст', mainForm)!;
-                        if (isNaN(w) || isNaN(h)) return '-';
+                        if (isNaN(w) || isNaN(h)) return '';
                         const hInSm = h / 100;
                         return (w / (hInSm ** 2)).toFixed(2);
                     },

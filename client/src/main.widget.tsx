@@ -55,7 +55,6 @@ export class MainWidget extends DomRootComponent {
         const printType = await PrintDialog.open();
         if (printType!==undefined) {
             const html = this.htmlRenderUtil.render(this.mainForm, printType);
-            //console.log(html);
             await HttpClient.post('/save-print-session',html, 'text/plain');
             TabInteractor.trigger();
         }
@@ -94,7 +93,7 @@ export class PrintWidget extends DomRootComponent{
 
     render(): JSX.Element {
         return (
-            <div style={{textAlign: 'center', paddingTop: '300px'}}>
+            <div>
                 {
                     window.name==='pdf'?
                         'Готуємо документ до друку...':

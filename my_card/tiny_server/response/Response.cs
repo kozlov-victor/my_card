@@ -12,6 +12,7 @@ namespace tinyServer.response
 
         public Stream Stream { set; get; } = new MemoryStream(Encoding.UTF8.GetBytes(""));
         public string ContentType { set; get; } = "text/plain";
+        public Dictionary<string, string> Headers { set; get; } = new Dictionary<string, string>();
         public int Code{ set; get; } = 200;
 
         public void WriteJSON(object obj)

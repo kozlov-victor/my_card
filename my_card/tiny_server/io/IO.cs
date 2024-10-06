@@ -66,8 +66,12 @@ namespace tinyServer.io
                 string headers = $"HTTP/1.1 {resp.Code} {respCodeStr}{n}";
                 headers += $"Content-Type: {resp.ContentType}{n}";
                 headers += $"Content-Length: {resp.Stream.Length}{n}";
+                foreach(var kv in resp.Headers)
+                {
+                    headers += $"{kv.Key}: {kv.Value}{n}";
+                }
                 headers += $"{n}";
-                byte[] headersBuffer = Encoding.ASCII.GetBytes(headers);
+                byte[] headersBuffer = Encoding.UTF8.GetBytes(headers);
                 client.GetStream().Write(headersBuffer, 0, headersBuffer.Length);
                 int count;
                 byte[] buffer = new byte[2048*2];
