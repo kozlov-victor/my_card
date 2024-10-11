@@ -1,10 +1,10 @@
 
-const key = 'tabInteractor::key';
 let cnt = 0;
 
 export class TabInteractor {
 
-    public static listen(fn:()=>void) {
+    public static listen(key:string,fn:()=>void) {
+        console.log('listen to', key);
         if (localStorage.getItem(key)) {
             localStorage.removeItem(key);
             fn();
@@ -19,16 +19,17 @@ export class TabInteractor {
         }
 
         // and maybe fallback
-        setInterval(()=>{
-            if (localStorage.getItem(key)) {
-                localStorage.removeItem(key);
-                fn();
-            }
-        },5_000);
+        // setTimeout(()=>{
+        //     if (localStorage.getItem(key)) {
+        //         localStorage.removeItem(key);
+        //         fn();
+        //     }
+        // },5_000);
 
     }
 
-    public static trigger() {
+    public static trigger(key:string) {
+        console.log('triggered');
         localStorage.setItem(key, ''+(cnt++));
     }
 

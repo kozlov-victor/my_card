@@ -44,8 +44,7 @@ export class AddMyTemplateDialog extends BaseTsxComponent {
     render(): JSX.Element {
         return (
             <>
-                <Dialog ref={el=>this.ref = el}>
-                    <h4>Створення шаблону для розділу: {this.model.name}</h4>
+                <Dialog ref={el=>this.ref = el} title={`Створення шаблону для розділу: ${this.model.name}`}>
 
                     <input
                         value={this.model.templateName}

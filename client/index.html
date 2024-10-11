@@ -9,6 +9,7 @@
 
         :root {
             --theme-color: #b8baff;
+            --theme-color-light: #cccefb;
             --bg-color: #e9ebfb;
             --bg-color-light: #fafafd;
             --gray: #9f9f9f;
@@ -42,6 +43,15 @@
 
         label {
             cursor: pointer;
+            user-select: none;
+        }
+        label.control {
+            max-width: 250px;
+            display: inline-block;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: pre;
+            vertical-align: middle;
         }
 
         hr {
@@ -66,6 +76,7 @@
             margin: 5px;
             cursor: pointer;
             color: black;
+            background-color: var(--bg-color-light);
         }
 
         button:disabled {
@@ -94,18 +105,37 @@
             resize: vertical;
         }
 
-        input[type=checkbox] {
+        input[type='checkbox']{
             display: inline-block;
-            width: 15px;
+            width: 20px;
             height: 15px;
             cursor: pointer;
             vertical-align: middle;
-            margin-left: 10px;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            -o-appearance: none;
+            appearance: none;
+            outline: 1px solid var(--theme-color);
+            box-shadow: none;
+            font-size: 0.8em;
+            text-align: center;
+            line-height: 1em;
+            background: var(--bg-color-light);
+            margin: 0 5px;
+        }
+
+        input[type='checkbox']:checked {
+            background: var(--theme-color);
+        }
+
+        input[type='checkbox']:checked:after {
+            content: '✔';
+            color: white;
         }
 
         input[type=radio] {
             outline: none;
-            border: 1px solid var(--gray);
+            border: 1px solid var(--theme-color);
             display: inline-block;
             vertical-align: middle;
             width: auto;
@@ -113,10 +143,14 @@
             margin: 6px;
         }
 
+        input:disabled,textarea:disabled {
+            background-color: var(--bg-color);
+        }
+
         .title {
-            padding: 5px;
+            padding: 5px 0;
             margin: 5px 0;
-            background-color: var(--theme-color);
+            background-color: var(--theme-color-light);
             color: white;
             font-weight: bold;
         }
@@ -211,7 +245,7 @@
             z-index: 1000;
             top: 0;
             padding: 10px;
-            text-align: right;
+            text-align: left;
             background-color: var(--theme-color);
             border-bottom: 1px solid #767676;
             color: white;
@@ -231,6 +265,9 @@
             width: 30px;
             height: 30px;
             text-align: center;
+            position: absolute;
+            right: 10px;
+            top: 10px;
             &:hover {
                 background-color: var(--bg-color);
             }

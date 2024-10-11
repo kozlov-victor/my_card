@@ -10,6 +10,7 @@ export abstract class VEngineTsxComponent extends BaseTsxComponent {
     private rootNativeElement:IRealNode;
     private rootVirtualElement:VirtualNode;
     private rendering:boolean = false;
+    private tid:any;
 
 
     protected constructor(
@@ -24,12 +25,16 @@ export abstract class VEngineTsxComponent extends BaseTsxComponent {
     }
 
     public override _triggerRendering():void{
-        if (this.rendering) return;
-        this.rendering = true;
-        if (this.rootNativeElement!==undefined) {
-            this.rootVirtualElement = this.tsxDOMRenderer.render(this,this.rootNativeElement);
-        }
-        this.rendering = false;
+        clearTimeout(this.tid);
+        this.tid = setTimeout(()=>{
+            if (this.rendering) return;
+            this.rendering = true;
+            if (this.rootNativeElement!==undefined) {
+                this.rootVirtualElement = this.tsxDOMRenderer.render(this,this.rootNativeElement);
+            }
+            this.rendering = false;
+            this.tid = undefined;
+        },1);
     }
 
     public mountTo(root:IRealNode):void {

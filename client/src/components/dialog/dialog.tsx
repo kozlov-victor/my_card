@@ -8,7 +8,7 @@ export class Dialog extends BaseTsxComponent {
     private opened = false;
     private resolve:(res:any)=>void;
 
-    constructor(private props: IBaseProps & {children?: any}) {
+    constructor(private props: IBaseProps & {children?: any, title:string}) {
         super();
     }
 
@@ -37,6 +37,7 @@ export class Dialog extends BaseTsxComponent {
                             <div className="modal-wrap-inner">
                                 <div className="dialog">
                                     <div className="dialog-head">
+                                        <h4 className={'dialog-title'}>{this.props.title}</h4>
                                         <span className="dialog-close" onclick={_=>this.close(undefined)}>✖
                                     </span>
                                 </div>

@@ -6,6 +6,7 @@ using tinyServer.response;
 
 using System.IO;
 using System.Web.Script.Serialization;
+using my_card.app;
 
 namespace my_card.controller
 {
@@ -21,6 +22,7 @@ namespace my_card.controller
     {
 
         private PdfUtil pdfUtil = new PdfUtil();
+        private WordUtil wordUtil = new WordUtil();
 
         [RequestAttribute(Url = "/save-session", Method = "POST")]
         public void SaveSession(Request req, Response resp)
@@ -60,17 +62,34 @@ namespace my_card.controller
         [RequestAttribute(Url = "/save-print-session", Method = "POST")]
         public void SavePrintSession(Request req, Response resp)
         {
-            var html = req.BodyText;
-            FileUtil.CreateFile("print-session", html);
+            var html = req.BodyJSON["html"];
+            var title = req.BodyJSON["title"];
+            FileUtil.CreateFile("print-session", new JavaScriptSerializer().Serialize(req.BodyJSON));
         }
 
         [RequestAttribute(Url = "/pdf", Method = "GET")]
-        public void Test(Request req, Response resp)
+        public void GetPdf(Request req, Response resp)
         {
-            var html = FileUtil.ReadFile("print-session", "no data to print");
+            var json = FileUtil.ReadFile("print-session", "{}");
+            var printSession = new JavaScriptSerializer().Deserialize<Dictionary<string,string>>(json);
+            var html = printSession["html"];
+            var title = printSession["title"];
+            resp.Headers.Add("Content-Disposition", $"inline; filename={title}.pdf");
             resp.WriteByteArray(pdfUtil.Create(html), "application/pdf");
-            resp.Headers.Add("content-disposition", "inline; filename=123.pdf");
         }
+
+
+        [RequestAttribute(Url = "/word", Method = "GET")]
+        public void GetWord(Request req, Response resp)
+        {
+            var json = FileUtil.ReadFile("print-session", "{}");
+            var printSession = new JavaScriptSerializer().Deserialize<Dictionary<string, string>>(json);
+            var html = printSession["html"];
+            var title = printSession["title"];
+            resp.Headers.Add("Content-Disposition", $"attachment; filename={title}.docx");
+            resp.WriteByteArray(wordUtil.Create(html), "application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+        }
+
 
     }
 }

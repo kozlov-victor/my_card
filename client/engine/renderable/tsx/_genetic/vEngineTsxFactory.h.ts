@@ -44,7 +44,11 @@ export class VEngineTsxFactory {
         const flattenedChildren:(VirtualNode|VirtualFragment)[] =
             flattenDeep(children).
             map((it,i)=>{
-                if ((it as unknown as string)?.substr!==undefined || (it as unknown as number)?.toFixed!==undefined) {
+                if (
+                    (it as unknown as string)?.substr!==undefined ||
+                    (it as unknown as number)?.toFixed!==undefined ||
+                    (it===true)
+                ) {
                     return  new VirtualTextNode(String(it));
                 }
                 else return it;

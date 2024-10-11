@@ -3,7 +3,6 @@ import {VEngineTsxFactory} from "@engine/renderable/tsx/_genetic/vEngineTsxFacto
 import {VirtualCommentNode, VirtualNode, VirtualTextNode} from "@engine/renderable/tsx/_genetic/virtualNode";
 import {SectionPrintComponent} from "../components/section";
 import {BrandHeader} from "../components/brand-header";
-import {getValue} from "../model/main-form";
 
 export class HtmlRendererUtil {
 
@@ -59,14 +58,25 @@ export class HtmlRendererUtil {
         }
     }
 
-    public render(mainForm:Section[], printType:'simple'|'branded') {
+    public render(mainForm:Section[], printType:'simple'|'branded',document:'pdf'|'word') {
         //language=CSS
         const css = `
-            @page {
-                margin: 0.59in 0.5in 0.5in 0.59in;
-                size: A4 portrait;
+            
+            ${document==='pdf'? 
+                `
+                @page {
+                    margin: 0.59in 0.5in 0.5in 0.59in;
+                    size: A4 portrait;
+                }
+                `:
+                `
+                body {
+                   margin: 0;
+                   font-family: Arial, sans-serif;
+                }
+                `
             }
-
+            
             * {
                 padding: 0;
                 margin: 0;
@@ -80,25 +90,10 @@ export class HtmlRendererUtil {
                 text-align: justify;
             }
             
-            .brand-header {
-                text-align: center;
-                z-index: 2;
-            }
-            
-            .logo {
-                position: absolute;
-                display: inline-block;
-                width: 0.91in;
-                height: 0.94in;
-                top: 0;
-                left: 0.61in;
-                z-index: 1;
-            }
-
             .no-break {
                 page-break-inside: avoid;
             }
-
+            
             .title {
                 font-weight: bold;
                 background-color: #e1e1e1;

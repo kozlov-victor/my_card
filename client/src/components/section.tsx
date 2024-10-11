@@ -6,23 +6,20 @@ import {
     ItemBase, StaticTextItem,
     Section,
     TextAreaItem,
-    TextInputItem
+    TextInputItem, TextInputDoubleItem
 } from "../model/model";
 import {VEngineTsxFactory} from "@engine/renderable/tsx/_genetic/vEngineTsxFactory.h";
-import {
-    CheckBoxComponent,
-    CheckBoxPrintComponent,
-    CheckBoxTextComponent,
-    CheckBoxTextPrintComponent,
-    ComboSelectComponent,
-    CompoSelectPrintComponent, DateInputComponent, DateInputPrintComponent, getSectionTitle, StaticTextComponent,
-    TextAreaComponent,
-    TextAreaPrintComponent,
-    TextInputComponent,
-    TextInputPrintComponent
-} from "./componentItems";
+
 import {BaseTsxComponent} from "@engine/renderable/tsx/base/baseTsxComponent";
 import {Reactive} from "@engine/renderable/tsx/decorator/reactive";
+import {TextAreaComponent,TextAreaPrintComponent} from "./controls/text-area";
+import {TextInputComponent,TextInputPrintComponent} from "./controls/text-input";
+import {CheckBoxTextComponent,CheckBoxTextPrintComponent} from "./controls/check-box-text";
+import {CheckBoxComponent,CheckBoxPrintComponent} from "./controls/check-box";
+import {ComboSelectComponent,ComboSelectPrintComponent} from "./controls/combo-select";
+import {DateInputComponent,DateInputPrintComponent} from "./controls/date-input";
+import {StaticTextComponent} from "./controls/static-text";
+import {TextInputDoubleComponent, TextInputDoublePrintComponent} from "./controls/text-input-double";
 
 
 const getComponentItemByType = (mainForm:Section[],section:Section,item:ItemBase,trackBy:string):[JSX.Element,JSX.Element]=>{
@@ -45,7 +42,7 @@ const getComponentItemByType = (mainForm:Section[],section:Section,item:ItemBase
         ]
         case 'comboSelect': return [
             <ComboSelectComponent trackBy={trackBy} mainForm={mainForm} item={item as ComboSelectItem}/>,
-            <CompoSelectPrintComponent mainForm={mainForm} item={item as ComboSelectItem}/>
+            <ComboSelectPrintComponent mainForm={mainForm} item={item as ComboSelectItem}/>
         ]
         case 'dateInput': return [
             <DateInputComponent trackBy={trackBy} mainForm={mainForm} item={item as DateInputItem}/>,
@@ -54,6 +51,10 @@ const getComponentItemByType = (mainForm:Section[],section:Section,item:ItemBase
         case 'staticText': return [
             undefined!,
             <StaticTextComponent mainForm={mainForm} item={item as StaticTextItem}/>
+        ]
+        case 'textInputDouble': return [
+            <TextInputDoubleComponent trackBy={trackBy} mainForm={mainForm} item={item as TextInputDoubleItem}/>,
+            <TextInputDoublePrintComponent mainForm={mainForm} item={item as TextInputDoubleItem}/>
         ]
         default: throw new Error(`wrong item type: ${item.type}`);
     }
@@ -66,65 +67,82 @@ export class SectionComponent extends BaseTsxComponent {
     }
 
     @Reactive.Method()
-    private triggerCollapsible(checked:boolean) {
-        if (this.props.section.collapsible) {
-            this.props.section.collapsible.currentValue = checked;
-        }
+    private triggerExpandable(checked:boolean) {
+        this.props.section.expanded = checked;
     }
 
-    render(): JSX.Element  {
-        const sectionTitle = getSectionTitle(this.props.section.title,'ui');
+    render(): JSX.Element {
+        const section = this.props.section;
+
         return (
             <>
                 <section>
-                    {sectionTitle && <div className={'title'}>{sectionTitle}</div>}
+                    <div className={this.props.section.sub?'sub-title':'title'}>
+                        <input
+                            id={`${this.props.trackBy}_${this.props.__id}`}
+                            onchange={e => this.triggerExpandable((e.target as HTMLInputElement).checked)}
+                            type={'checkbox'}
+                            checked={this.props.section.expanded}/>
+                        <label
+                            htmlFor={`${this.props.trackBy}_${this.props.__id}`}>
+                            {section.title}
+                        </label>
+                    </div>
                     <>
-                        {this.props.section.subTitle && <div className={'sub-title'}>
-                            {
-                                this.props.section.collapsible &&
-                                <input
-                                    id={`section_${this.props.trackBy}`}
-                                    style={{margin: '0px 10px 0 0'}}
-                                    onchange={e => this.triggerCollapsible((e.target as HTMLInputElement).checked)}
-                                    type={'checkbox'}
-                                    checked={this.props.section.collapsible?.currentValue}/>
-                            }
-                            <label htmlFor={this.props.section.collapsible?`section_${this.props.trackBy}`:undefined}>
-                                {this.props.section.subTitle}
-                            </label>
-                        </div>}
-                        {(this.props.section.collapsible === undefined || this.props.section.collapsible.currentValue) &&
+                        {section.expanded &&
                             <>
-                                {this.props.section.items.map((block, itemIndex) =>
+                                {section.items.filter(it=>it.type!=='section').map((block, itemIndex) =>
                                     <div
                                         className={`item ${block.type}`}>
-                                        {getComponentItemByType(this.props.mainForm,this.props.section,block, this.props.trackBy +"_" + itemIndex)?.[0]}
+                                        {getComponentItemByType(this.props.mainForm, this.props.section, block, this.props.trackBy + "_" + itemIndex)?.[0]}
                                     </div>
+                                )}
+                                {section.items.filter(it=>it.type==='section').map((block, itemIndex) =>
+                                    <SectionComponent
+                                        mainForm={this.props.mainForm}
+                                        section={block as Section}
+                                        trackBy={this.props.trackBy+'_subsection_'+itemIndex}
+                                    />
                                 )}
                             </>
                         }
                     </>
                 </section>
+
             </>
         );
     }
 
 }
 
-export const SectionPrintComponent = (props: IBaseProps & {section:Section, mainForm: Section[]})=>{
-    const sectionTitle = getSectionTitle(props.section.title,'print');
+export const SectionPrintComponent = (props: IBaseProps & { section: Section, mainForm: Section[] }) => {
+    if (!props.section.expanded) return <></>;
+    const sectionHasOnlyOneSubsection = props.section.items.length===1 && props.section.items[0].type==='section';
     return (
-        <div className={'no-break'}>
-            {sectionTitle && <div className={'title'}>{sectionTitle}</div>}
-            {
-                (props.section.collapsible===undefined || props.section.collapsible.currentValue) &&
+        <>
+            <div className={'no-break'}>
+                <div className={props.section.sub ? 'sub-title' : 'title'}>{props.section.title}</div>
+                {
+                    props.section.expanded &&
+                    <>
+                        {props.section.items.filter(it => it.type !== 'section').map(item =>
+                            getComponentItemByType(props.mainForm, props.section, item, '')[1]
+                        )}
+                        {sectionHasOnlyOneSubsection &&
+                            <SectionPrintComponent section={props.section.items[0] as Section}
+                                                   mainForm={props.mainForm}/>
+                        }
+                    </>
+                }
+            </div>
+            {!sectionHasOnlyOneSubsection &&
                 <>
-                    {props.section.subTitle && <div className={'sub-title'}>{props.section.subTitle}</div>}
-                    {props.section.items.map(item =>
-                        getComponentItemByType(props.mainForm, props.section, item, '')[1]
+                    {props.section.items.filter(it => it.type === 'section').map(item =>
+                        <SectionPrintComponent section={item as Section}
+                                               mainForm={props.mainForm}/>
                     )}
                 </>
             }
-        </div>
+        </>
     );
 }

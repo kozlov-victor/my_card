@@ -1,5 +1,3 @@
-
-
 export interface SelectItem2 {
     value:string;
     hasCustomText?:true;
@@ -13,6 +11,9 @@ export interface SelectItem2 {
 export interface ItemBase {
     type: string;
     title: string|((mainForm:Section[])=>string);
+    unchecked?:boolean;
+    printWithNewLine?:true;
+    doesNotPrint?:true;
 }
 
 export interface TextAreaItem extends ItemBase {
@@ -26,10 +27,21 @@ export interface TextInputItem extends ItemBase {
     expandable?: true;
     allowedSymbols?:string[],
     disabled?:true;
-    transform?:'capitalize'|'asIs';
-    withNewLine?:true;
     postfix?:string;
     formula?:(mainForm:Section[])=>string;
+    customPrintValue?:(mainForm:Section[])=>string|JSX.Element;
+}
+
+export interface TextInputDoubleItem extends ItemBase {
+    value1?: string;
+    value2?: string;
+    type: 'textInputDouble';
+    allowedSymbols?:string[],
+    disabled?:true;
+    postfix1?:string;
+    postfix2?:string;
+    formula1?:(mainForm:Section[])=>string;
+    formula2?:(mainForm:Section[])=>string;
 }
 
 export interface DateInputItem extends ItemBase {
@@ -38,14 +50,12 @@ export interface DateInputItem extends ItemBase {
 }
 
 export interface CheckBoxTextItem extends ItemBase {
-    value?: boolean;
     type: 'checkBoxText';
     customValue?:string;
 }
 
 export interface CheckBoxItem extends ItemBase {
     type: 'checkBox';
-    value?: boolean;
 }
 
 export interface ComboSelectItem extends ItemBase {
@@ -62,15 +72,15 @@ export interface StaticTextItem extends ItemBase {
 }
 
 export interface Section {
-    title?: string|((renderType:'ui'|'print')=>string);
-    subTitle?:string;
-    collapsible?: {
-        isCollapsible: true,
-        currentValue: boolean
-    },
+    type: 'section',
+    sub?: true,
+    title: string;
+    expanded: boolean,
     items: (
         TextAreaItem|TextInputItem|
         DateInputItem|CheckBoxTextItem|
-        CheckBoxItem|ComboSelectItem|StaticTextItem
+        CheckBoxItem|ComboSelectItem|
+        TextInputDoubleItem|
+        StaticTextItem|Section
         )[];
 }

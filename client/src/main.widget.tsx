@@ -9,9 +9,10 @@ import {PrintDialog} from "./components/dialogs/print-dialog";
 import {HtmlRendererUtil} from "./utils/html-renderer-util";
 import {TabInteractor} from "./utils/tab-interactor";
 import {Section} from "./model/model";
-import {createMainForm, getValue, setValue} from "./model/main-form";
+import {createMainForm} from "./model/main-form";
 import {PromptDialog} from "./components/dialogs/prompt-dialog";
 import {version} from "./version.json"
+import {accessor, accessorUtils} from "./model/accessor";
 
 export class MainWidget extends DomRootComponent {
 
@@ -41,22 +42,24 @@ export class MainWidget extends DomRootComponent {
     private async openNewSessionDialog() {
         const agree =
             await PromptDialog.open(
-                'Створити нове звернення?'
+                'Створити нове звернення? (Попередні дані буде втрачено)'
             );
         if (!agree) return;
-        const userName = getValue('Лікар',this.mainForm);
+        const userName = accessor.getValue('Лікар',this.mainForm);
         this.mainForm = createMainForm();
-        setValue('Лікар', userName, this.mainForm);
+        accessor.setValue('Лікар', userName, this.mainForm);
         await HttpClient.post<any>('/save-session',this.serializeUtil.serialize(this.mainForm));
     }
 
     @Reactive.Method()
     private async openPrintDialog() {
-        const printType = await PrintDialog.open();
-        if (printType!==undefined) {
-            const html = this.htmlRenderUtil.render(this.mainForm, printType);
-            await HttpClient.post('/save-print-session',html, 'text/plain');
-            TabInteractor.trigger();
+        const opts:{printType:'simple'|'branded',documentType:'pdf'|'word'} = await PrintDialog.open();
+        if (opts!==undefined) {
+            const title =
+                accessorUtils.getPib(this.mainForm,'ui') || 'document';
+            const html = this.htmlRenderUtil.render(this.mainForm, opts.printType,opts.documentType);
+            await HttpClient.post('/save-print-session',{html,title});
+            TabInteractor.trigger('onPrintReady');
         }
     }
 
@@ -84,18 +87,18 @@ export class PrintWidget extends DomRootComponent{
 
     constructor() {
         super();
-        TabInteractor.listen(()=>{
+        TabInteractor.listen('onPrintReady',()=>{
             location.href =
-                `${location.protocol}//${location.hostname}:${location.port}/pdf`;
+                `${location.protocol}//${location.hostname}:${location.port}/${window.name}`;
+            setTimeout(()=>window.close(),5_000);
         });
-
     }
 
     render(): JSX.Element {
         return (
             <div>
                 {
-                    window.name==='pdf'?
+                    (window.name==='pdf' || window.name==='word')?
                         'Готуємо документ до друку...':
                         'Ця сторінка відкрита некоректно. Закрийте її та скористайтесь кнопкою "Друк"'
                 }

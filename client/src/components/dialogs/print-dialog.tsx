@@ -24,14 +24,16 @@ export class PrintDialog extends BaseTsxComponent {
     render(): JSX.Element {
         return (
             <>
-                <Dialog ref={el=>this.ref = el}>
-                    <h4>Друк документу</h4>
+                <Dialog ref={el => this.ref = el} title={'Друк документу'}>
                     Оберіть тип бланку
-                    <ul style={{margin:'0 auto', width: '100px'}}>
+                    <ul style={{margin: '0 auto', width: '100px'}}>
                         {
-                            [{type:'branded',text:'Фірмовий'} as const,{type:'simple',text:'Звичайний'} as const].map(it=>
+                            [{type: 'branded', text: 'Фірмовий'} as const, {
+                                type: 'simple',
+                                text: 'Звичайний'
+                            } as const].map(it =>
                                 <li
-                                    style={{padding:'0'}}
+                                    style={{padding: '0'}}
                                 >
                                     <label
                                         style={{display: 'block'}}
@@ -49,11 +51,18 @@ export class PrintDialog extends BaseTsxComponent {
                         }
                     </ul>
                     <a
-                        onclick={_ => this.ref.close(this.printType)}
+                        onclick={_ => this.ref.close({printType:this.printType,documentType:'pdf'})}
                         target={'pdf'}
                         className={'button-like'}
-                        href={'/?prepareDocument'}>
+                        href={'/?prepareDocument&type=pdf'}>
                         Сформувати pdf
+                    </a>
+                    <a
+                        onclick={_ => this.ref.close({printType:this.printType,documentType:'word'})}
+                        target={'word'}
+                        className={'button-like'}
+                        href={'/?prepareDocument&type=word'}>
+                        Сформувати word
                     </a>
                 </Dialog>
             </>

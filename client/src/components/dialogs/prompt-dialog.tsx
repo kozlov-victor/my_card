@@ -22,7 +22,7 @@ export class PromptDialog extends BaseTsxComponent {
 
     render(): JSX.Element {
         return (
-            <Dialog ref={el=>this.ref = el}>
+            <Dialog ref={el=>this.ref = el} title={'Увага!'}>
                 <h3>{this.text}</h3>
                 <div>
                     <button onclick={_=>this.ref.close(true)}>{this.buttons[0]}</button>

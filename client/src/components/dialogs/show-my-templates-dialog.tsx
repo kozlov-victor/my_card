@@ -33,8 +33,7 @@ export class ShowMyTemplatesDialog extends BaseTsxComponent {
     render(): JSX.Element {
         return (
             <>
-                <Dialog ref={el=>this.ref = el}>
-                    <h4>Мої шаблони для розділу: {this.name}</h4>
+                <Dialog ref={el=>this.ref = el} title={`Мої шаблони для розділу: ${this.name}`}>
                     {
                         this.templates.length>0 &&
                             <ul>
