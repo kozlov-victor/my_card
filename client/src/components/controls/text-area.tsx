@@ -16,16 +16,18 @@ export class TextAreaComponent extends AbstractInputBase {
 
     @Reactive.Method()
     private async openSaveAsTemplateDialog() {
-        const resp = await AddMyTemplateDialog.open(this.props.section.title, this.props.item.value);
-        if (!resp) return;
-        await HttpClient.post('/save-as-template',resp);
+        const template:ITemplate = {
+            templateName: 'Новий шаблон',
+            content: this.props.item.value ?? '',
+        };
+        await AddMyTemplateDialog.editTemplate(template,this.props.section.title);
     }
 
     @Reactive.Method()
     private async openShowMyTemplatesDialog() {
-        const name = this.props.section.title;
-        const templates = await HttpClient.post<ITemplate[]>('/get-my-templates',{name})
-        const resp = await ShowMyTemplatesDialog.open(name, templates);
+        const category = this.props.section.title;
+        const templates = await HttpClient.post<ITemplate[]>('/get-my-templates',{category})
+        const resp = await ShowMyTemplatesDialog.open(category, templates);
         if (!resp) return;
         this.props.item.value = resp;
     }

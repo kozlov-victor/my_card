@@ -8,10 +8,9 @@ export const BrandHeader = ()=> {
             <table style={{margin: `0 auto`,textAlign:'center'}}>
                 <tbody>
                 <tr>
-                    <td rowSpan={5}>
+                    <td style={{height:'0.8in'}} rowSpan={5}>
                         <img
                             style={{
-                                position: 'fixed',
                                 display: 'inline-block',
                                 width: '0.91in',
                                 height: '0.94in',

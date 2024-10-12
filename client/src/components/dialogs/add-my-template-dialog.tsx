@@ -2,9 +2,11 @@ import {VEngineTsxFactory} from "@engine/renderable/tsx/_genetic/vEngineTsxFacto
 import {BaseTsxComponent} from "@engine/renderable/tsx/base/baseTsxComponent";
 import {Dialog} from "../dialog/dialog";
 import {Reactive} from "@engine/renderable/tsx/decorator/reactive";
+import {HttpClient} from "../../httpClient";
+import {PromptDialog} from "./prompt-dialog";
+import {AlertDialog} from "./alert-dialog";
 
-interface IModel {
-    name:string;
+export interface ITemplate {
     content?:string;
     templateName:string;
 }
@@ -14,40 +16,64 @@ export class AddMyTemplateDialog extends BaseTsxComponent {
     private static instance:AddMyTemplateDialog;
     private ref:Dialog;
 
-    private model:IModel = {} as IModel;
+    private template:ITemplate = {} as ITemplate;
+    private category:string;
+    private index?:number;
 
     constructor() {
         super();
         AddMyTemplateDialog.instance = this;
     }
 
-    public static async open(name:string,content?:string) {
-        this.instance.model = {name,content,templateName:'Новий шаблон'};
+    @Reactive.Method()
+    public static async open(template:ITemplate,category:string,index?:number):Promise<ITemplate & {template:ITemplate,extra:{category:string,index?:number,force:boolean}}> {
+        this.instance.template = template;
+        this.instance.category = category;
+        this.instance.index = index;
         return this.instance.ref.open();
     }
 
     @Reactive.Method()
+    public static async editTemplate(template:ITemplate,category:string,index?:number) {
+        const model = await AddMyTemplateDialog.open(template,category,index);
+        if (!model) return;
+        let resp = await HttpClient.post<{result:'ok'|'duplication'}>('/save-as-template',model);
+        if (resp.result==='duplication') {
+            if ((await PromptDialog.open(`Запис "${model.template.templateName}" вже існує. Перезаписати?`))) {
+                model.extra.force = true;
+                resp = await HttpClient.post<{result:'ok'|'duplication'}>('/save-as-template',model);
+                if (resp.result!=='ok') {
+                    await AlertDialog.open('Помилка збереження!');
+                }
+            }
+            else {
+                await AddMyTemplateDialog.editTemplate(model.template,category,index);
+            }
+        }
+    }
+
+    @Reactive.Method()
     private setTemplateName(val:string) {
-        this.model.templateName = val;
+        this.template.templateName = val;
     }
 
     @Reactive.Method()
     private setContent(val:string) {
-        this.model.content = val;
+        this.template.content = val;
     }
 
     @Reactive.Method()
     private save() {
-        return this.ref.close(this.model);
+        return this.ref.close({template:this.template,extra:{category:this.category,index:this.index,force:false}});
     }
 
     render(): JSX.Element {
         return (
             <>
-                <Dialog ref={el=>this.ref = el} title={`Створення шаблону для розділу: ${this.model.name}`}>
+                <Dialog ref={el=>this.ref = el} title={`${this.index===undefined?'Створення':'Редагування'} шаблону для розділу: ${this.category}`}>
 
                     <input
-                        value={this.model.templateName}
+                        value={this.template.templateName}
                         oninput={e => this.setTemplateName((e.target as HTMLInputElement).value)}/>
 
                     <hr/>
@@ -59,9 +85,9 @@ export class AddMyTemplateDialog extends BaseTsxComponent {
                                 height: '100px'
                             }
                         }
-                        value={this.model.content} onchange={e=>this.setContent((e.target as HTMLTextAreaElement).value)}/>
+                        value={this.template.content} onchange={e=>this.setContent((e.target as HTMLTextAreaElement).value)}/>
 
-                    <button disabled={!this.model.templateName} onclick={_=>this.save()}>Зберегти</button>
+                    <button disabled={!this.template.templateName} onclick={_=>this.save()}>Зберегти</button>
                 </Dialog>
             </>
         );

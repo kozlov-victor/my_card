@@ -3,22 +3,20 @@ import {VEngineTsxFactory} from "@engine/renderable/tsx/_genetic/vEngineTsxFacto
 import {Dialog} from "../dialog/dialog";
 import {Reactive} from "@engine/renderable/tsx/decorator/reactive";
 
-export class PromptDialog extends BaseTsxComponent {
+export class AlertDialog extends BaseTsxComponent {
 
-    private static instance:PromptDialog;
+    private static instance:AlertDialog;
     private ref:Dialog;
     private text: string;
-    private buttons:[string,string] = ['',''];
 
     constructor() {
         super();
-        PromptDialog.instance = this;
+        AlertDialog.instance = this;
     }
 
     @Reactive.Method()
-    public static async open(text:string,buttons:[string,string] = ['Так','Ні']):Promise<boolean> {
+    public static async open(text:string):Promise<boolean> {
         this.instance.text = text;
-        this.instance.buttons = buttons;
         return this.instance.ref.open();
     }
 
@@ -27,8 +25,7 @@ export class PromptDialog extends BaseTsxComponent {
             <Dialog ref={el=>this.ref = el} title={'Увага!'}>
                 <h3>{this.text}</h3>
                 <div>
-                    <button onclick={_=>this.ref.close(true)}>{this.buttons[0]}</button>
-                    <button onclick={_=>this.ref.close(false)}>{this.buttons[1]}</button>
+                    <button onclick={_=>this.ref.close(false)}>Ok</button>
                 </div>
             </Dialog>
         );

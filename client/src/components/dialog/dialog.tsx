@@ -31,15 +31,12 @@ export class Dialog extends BaseTsxComponent {
             <>
                 {
                     this.opened &&
-                    <>
-                        <div className="overlay"></div>
-                        <div className="modal-wrap-outer">
-                            <div className="modal-wrap-inner">
-                                <div className="dialog">
-                                    <div className="dialog-head">
-                                        <h4 className={'dialog-title'}>{this.props.title}</h4>
-                                        <span className="dialog-close" onclick={_=>this.close(undefined)}>✖
-                                    </span>
+                    <div className="modal-wrap-outer">
+                        <div className="modal-wrap-inner">
+                            <div className="dialog">
+                                <div className="dialog-head">
+                                    <h4 className={'dialog-title'}>{this.props.title}</h4>
+                                    <span className="dialog-close" onclick={_ => this.close(undefined)}>✖</span>
                                 </div>
                                 <div className="dialog-body">
                                     {this.props.children}
@@ -47,8 +44,6 @@ export class Dialog extends BaseTsxComponent {
                             </div>
                         </div>
                     </div>
-                    </>
-
                 }
             </>
         );

@@ -17,6 +17,7 @@ export class PrintDialog extends BaseTsxComponent {
         PrintDialog.instance = this;
     }
 
+    @Reactive.Method()
     public static async open() {
         return this.instance.ref.open();
     }

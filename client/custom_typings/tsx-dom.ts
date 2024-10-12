@@ -124,10 +124,10 @@ declare namespace JSX {
         table: ICommonElement<HTMLTableElement> & Partial<Omit<HTMLTableElement,"style">> & {style?:Partial<CSSStyleDeclaration>};
         template: ICommonElement<HTMLTemplateElement> & Partial<Omit<HTMLTemplateElement,"style">> & {style?:Partial<CSSStyleDeclaration>};
         tbody: ICommonElement<HTMLTableSectionElement> & Partial<Omit<HTMLTableSectionElement,"style">> & {style?:Partial<CSSStyleDeclaration>};
-        td: ICommonElement<HTMLTableDataCellElement> & Partial<Omit<HTMLTableDataCellElement,"style">> & {style?:Partial<CSSStyleDeclaration>};
+        td: ICommonElement<HTMLTableCellElement> & Partial<Omit<HTMLTableDataCellElement,"style">> & {style?:Partial<CSSStyleDeclaration>};
         textarea: ICommonElement<HTMLTextAreaElement> & Partial<Omit<HTMLTextAreaElement,"style">> & {style?:Partial<CSSStyleDeclaration>};
         tfoot: ICommonElement<HTMLTableSectionElement> & Partial<Omit<HTMLTableSectionElement,"style">> & {style?:Partial<CSSStyleDeclaration>};
-        th: ICommonElement<HTMLTableHeaderCellElement> & Partial<Omit<HTMLTableHeaderCellElement,"style">> & {style?:Partial<CSSStyleDeclaration>};
+        th: ICommonElement<HTMLTableCellElement> & Partial<Omit<HTMLTableHeaderCellElement,"style">> & {style?:Partial<CSSStyleDeclaration>};
         thead: ICommonElement<HTMLTableSectionElement> & Partial<Omit<HTMLTableSectionElement,"style">> & {style?:Partial<CSSStyleDeclaration>};
         time: ICommonElement<HTMLElement> & Partial<Omit<HTMLElement,"style">> & {style?:Partial<CSSStyleDeclaration>};
         title: ICommonElement<HTMLTitleElement> & Partial<Omit<HTMLTitleElement,"style">> & {style?:Partial<CSSStyleDeclaration>};
