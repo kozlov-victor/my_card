@@ -3,4 +3,5 @@
 /client/node_modules/
 /my_card/obj/
 /my_card/packages/
+/my_card/bin/
 /my_card/.vs/
