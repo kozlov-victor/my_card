@@ -59,13 +59,19 @@ export const TextAreaPrintComponent = (props: IBaseProps & {item:TextAreaItem,se
     let value = props.item.value;
     value = removeTailDot(trim(value));
     if (!value) return <></>;
+    const formatedValue:JSX.Element[] = [];
+    const segments = value.split('\n');
+    segments.forEach((el,i)=>{
+        formatedValue.push(el);
+        if (i<segments.length-1) formatedValue.push(<br/>);
+    });
     const title = getElementPrintTitle(props.mainForm,props.item);
     return (
         <>
             {props.item.printWithNewLine && <br/>}
             {title}
-            <div style={{whiteSpace:'pre'}}>
-                {`${value}.`}
+            <div>
+                {formatedValue}
             </div>
     </>
 );

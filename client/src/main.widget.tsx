@@ -30,7 +30,7 @@ export class MainWidget extends DomRootComponent {
 
         setInterval(()=>{
             HttpClient.post('/save-session', this.serializeUtil.serialize(this.mainForm));
-        },1000*30);
+        },1000*60);
     }
 
     @Reactive.Method()
@@ -48,22 +48,36 @@ export class MainWidget extends DomRootComponent {
         const userName = accessor.getValue('Лікар',this.mainForm);
         this.mainForm = createMainForm();
         accessor.setValue('Лікар', userName, this.mainForm);
-        await HttpClient.post<any>('/save-session',this.serializeUtil.serialize(this.mainForm));
+        await HttpClient.post<void>('/save-session',this.serializeUtil.serialize(this.mainForm));
     }
 
     @Reactive.Method()
     private async openPrintDialog() {
         const opts:{printType:'simple'|'branded',documentType:'pdf'|'word'} = await PrintDialog.open();
-        if (opts!==undefined) {
-            const title =
-                accessorUtils.getPib(this.mainForm,'ui') || 'document';
-            const html = this.htmlRenderUtil.render(this.mainForm, opts.printType,opts.documentType);
-            await HttpClient.post('/save-print-session',{html,title});
-            TabInteractor.trigger('onPrintReady');
-        }
+        if (!opts) return;
+        const form = this.mainForm.
+            map(it=>({...it,items:[...it.items]})).
+            filter(it=>it.expanded);
+        const lastItem = form.pop()!;
+        form[form.length-1].items.push(...lastItem.items);
+        const title =
+            accessorUtils.getPib(this.mainForm,'ui') || 'document';
+        const html = this.htmlRenderUtil.render(form, title, opts.printType,opts.documentType);
+        //console.log(html);
+        await HttpClient.post('/save-print-session',{html,title});
+        TabInteractor.trigger('onPrintReady');
     }
 
     render(): JSX.Element {
+
+        if (window.name==='pdf' || window.name==='word') {
+            return (
+                <>
+                    Ця сторінка відкрита некоректно. перезапустіть програму
+                </>
+            );
+        }
+
         return (
             <>
                 <button onclick={this.saveSession}>Зберігти сесію</button>
@@ -85,23 +99,34 @@ export class MainWidget extends DomRootComponent {
 
 export class PrintWidget extends DomRootComponent{
 
+    @Reactive.Property()
+    private title = '';
+
     constructor() {
         super();
+        this.title =
+            (window.name==='pdf' || window.name==='word')?
+            'Готуємо документ до друку...':
+            'Ця сторінка відкрита некоректно. Закрийте її та скористайтесь кнопкою "Друк"'
         TabInteractor.listen('onPrintReady',()=>{
             location.href =
                 `${location.protocol}//${location.hostname}:${location.port}/${window.name}`;
-            setTimeout(()=>window.close(),5_000);
+            setTimeout(()=>{
+                this.title = 'Готово...';
+            },10_000);
+            setTimeout(()=>{
+                this.title = 'Цю сторінку можна закрити';
+            },15_000);
+            setTimeout(()=>{
+                close();
+            },25_000);
         });
     }
 
     render(): JSX.Element {
         return (
             <div>
-                {
-                    (window.name==='pdf' || window.name==='word')?
-                        'Готуємо документ до друку...':
-                        'Ця сторінка відкрита некоректно. Закрийте її та скористайтесь кнопкою "Друк"'
-                }
+                {this.title}
             </div>
         );
     }

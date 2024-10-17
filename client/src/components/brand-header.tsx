@@ -8,7 +8,7 @@ export const BrandHeader = ()=> {
             <table style={{margin: `0 auto`,textAlign:'center'}}>
                 <tbody>
                 <tr>
-                    <td style={{height:'0.8in'}} rowSpan={5}>
+                    <td rowSpan={5}>
                         <img
                             style={{
                                 display: 'inline-block',
@@ -23,7 +23,7 @@ export const BrandHeader = ()=> {
                     <td>
                         <b>ТОВАРИСТВО З ОБМЕЖЕНОЮ ВІДПОВІДАЛЬНІСТЮ</b>
                     </td>
-                    <td style={{width:'0.91in'}}>
+                    <td style={{width:'0.93in'}}>
                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     </td>
                 </tr>
@@ -57,3 +57,30 @@ export const BrandHeader = ()=> {
         </>
     );
 }
+
+// export const BrandHeader = ()=> {
+//     return (
+//         <>
+//             <img
+//                 style={{
+//                     position: 'absolute',
+//                     display: 'inline-block',
+//                     width: '0.91in',
+//                     height: '0.94in',
+//                     top: '0.02in',
+//                     left: '0.61in',
+//                     zIndex: '1',
+//                 }}
+//                 alt=''
+//                 src={logoBase64}/>
+//             <div className={'brand-header'}>
+//                 <div className={'line'}><b>ТОВАРИСТВО З ОБМЕЖЕНОЮ ВІДПОВІДАЛЬНІСТЮ</b></div>
+//                 <div className={'line'}><b>ЕДЕЛЬВЕЙС МЕДІКС</b></div>
+//                 <div className={'line'}><b>ЄДРПОУ 41218395</b></div>
+//                 <div className={'line'}>Адреса: 02002 м. Київ, вул. Р. Окіпної 8-Б</div>
+//                 <div className={'line'}>Банк ПАТ УкрСиббанк, МФО 351005 П/р 26007654561500</div>
+//                 <br/>
+//             </div>
+//         </>
+//     );
+// }

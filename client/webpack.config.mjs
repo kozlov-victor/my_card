@@ -8,10 +8,8 @@ const copyResourcesToSharp = ()=>{
     let indexHtml = fs.readFileSync('./index.html','utf8');
     indexHtml = indexHtml.replace('${build_no}',new Date().getTime()+'');
     fs.writeFileSync('../my_card/bin/Debug/index.html',indexHtml);
-
     fs.copyFileSync('./out/index.js','../my_card/bin/Debug/index.js');
     fs.copyFileSync('./src/version.json','./out/version.json');
-
 }
 
 class WebpackDonePlugin{

@@ -146,6 +146,11 @@ declare namespace JSX {
         circle:any;
         path:any;
         line:any;
+        text:any;
+        tspan:any;
+        image:any;
+        clipPath:any;
+        defs:any;
 
     }
     export interface Element {}

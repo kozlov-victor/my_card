@@ -9,8 +9,6 @@ export interface IBaseProps {
 
 export class VirtualNode implements INode, JSX.Element {
 
-    public index:number = 0;
-    public loopIndex:number = undefined!;
     public type = 'virtualNode' as const;
     public parentComponent:BaseTsxComponent;
 

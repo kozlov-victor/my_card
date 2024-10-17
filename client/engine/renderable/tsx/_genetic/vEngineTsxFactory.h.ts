@@ -5,9 +5,6 @@ import {BaseTsxComponent} from "@engine/renderable/tsx/base/baseTsxComponent";
 const flattenDeep = <T>(arr:(T[]|T)[]):T[]=> {
     const res =  arr.reduce((acc, val) => {
         if (Array.isArray(val)) {
-            val.forEach((v,i)=>{
-                (v as VirtualNode).loopIndex=i;
-            });
             return (acc as T[]).concat(flattenDeep(val as T[]));
         } else return (acc as T[]).concat(val as T);
     },[]);

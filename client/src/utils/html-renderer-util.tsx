@@ -58,7 +58,7 @@ export class HtmlRendererUtil {
         }
     }
 
-    public render(mainForm:Section[], printType:'simple'|'branded',document:'pdf'|'word') {
+    public render(mainForm:Section[], title: string, printType:'simple'|'branded',document:'pdf'|'word') {
         //language=CSS
         const css = `
             
@@ -89,6 +89,11 @@ export class HtmlRendererUtil {
             body {
                 text-align: justify;
             }
+
+            .brand-header {
+                text-align: center;
+                z-index: 2;
+            }
             
             .no-break {
                 page-break-inside: avoid;
@@ -111,7 +116,7 @@ export class HtmlRendererUtil {
         const node =  (
             <html lang="en">
                 <head>
-                    <title>{}</title>
+                    <title>{title}</title>
                     <style>{css}</style>
                 </head>
                 <body>

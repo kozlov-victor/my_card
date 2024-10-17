@@ -117,7 +117,8 @@ export class SectionComponent extends BaseTsxComponent {
 
 export const SectionPrintComponent = (props: IBaseProps & { section: Section, mainForm: Section[] }) => {
     if (!props.section.expanded) return <></>;
-    const sectionHasOnlyOneSubsection = props.section.items.length===1 && props.section.items[0].type==='section';
+    const firstChild = props.section.items[0];
+    const nextChildren = props.section.items.slice(1);
     return (
         <>
             <div className={'no-break'}>
@@ -128,21 +129,19 @@ export const SectionPrintComponent = (props: IBaseProps & { section: Section, ma
                         {props.section.items.filter(it => it.type !== 'section').map(item =>
                             getComponentItemByType(props.mainForm, props.section, item, '')[1]
                         )}
-                        {sectionHasOnlyOneSubsection &&
+                        {firstChild.type==='section' &&
                             <SectionPrintComponent section={props.section.items[0] as Section}
-                                                   mainForm={props.mainForm}/>
+                               mainForm={props.mainForm}/>
                         }
                     </>
                 }
             </div>
-            {!sectionHasOnlyOneSubsection &&
-                <>
-                    {props.section.items.filter(it => it.type === 'section').map(item =>
-                        <SectionPrintComponent section={item as Section}
-                                               mainForm={props.mainForm}/>
-                    )}
-                </>
-            }
+            <>
+                {nextChildren.filter(it => it.type === 'section').map(item =>
+                    <SectionPrintComponent section={item as Section}
+                       mainForm={props.mainForm}/>
+                )}
+            </>
         </>
     );
 }

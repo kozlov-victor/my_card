@@ -1079,6 +1079,8 @@ export const createMainForm = ()=>{
                         const date = doctorEl.doesNotPrint?'':dateEl.value;
                         return (
                             <>
+                                <br/>
+                                <br/>
                                 <table style={{width:'100%', borderCollapse:'collapsed'}}>
                                     <tbody>
                                     <tr>
@@ -1091,7 +1093,6 @@ export const createMainForm = ()=>{
                         );
                     },
                     type: 'textInput',
-                    printWithNewLine: true,
                 },
                 {
                     title: 'Дата консультації',

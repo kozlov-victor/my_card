@@ -29,7 +29,7 @@ export class TabInteractor {
     }
 
     public static trigger(key:string) {
-        console.log('triggered');
+        console.log('triggered',key);
         localStorage.setItem(key, ''+(cnt++));
     }
 

@@ -87,9 +87,8 @@ export abstract class AbstractTsxDOMRenderer<T extends IRealNode> {
         }
         else if (newVirtualNode!==undefined && oldVirtualNode!==undefined && newRealNode!==undefined) {
             if (
-                newVirtualNode.index !==oldVirtualNode.index ||
+                newVirtualNode.props?.trackBy !==oldVirtualNode.props?.trackBy ||
                 newVirtualNode.props?.__id !==oldVirtualNode.props?.__id ||
-                newVirtualNode.loopIndex!==oldVirtualNode.loopIndex ||
                 newVirtualNode.tagName!==oldVirtualNode.tagName
             ) { // replace node
                 newRealNode = this.replaceNode(newRealNode,oldVirtualNode,newVirtualNode,parent);

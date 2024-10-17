@@ -36,7 +36,7 @@
 </div>
 
 <ul>
-      <li>Завантажити <a href="/my_card/my_card.zip">архів</a></li>
+      <li>Завантажити <a id="link" href="">архів</a></li>
       <li>Хром може проявити надмірну пильність і сказати, що zip-архіви завантажувати небезпечно. В нашому архіві немає нічого небезпечного.
           Наша місія - створювати, а не руйнувати. Тому сміливо качаємо.
       </li>
@@ -69,6 +69,7 @@
     .then(response => response.json())
     .then(response => {
         document.getElementById('version').textContent = response.version;
+        document.getElementById('link').setAttribute('href','/my_card/my_card.zip?v='+response.version+'&uid='+new Date().getTime());
     });
 </script>
 

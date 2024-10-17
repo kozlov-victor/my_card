@@ -4,7 +4,8 @@ import {HTMLElementWrap} from "@engine/renderable/tsx/dom/internal/HTMLElementWr
 
 const ELEMENT_PROPERTIES = ['value','checked','selected','focus','disabled','readonly'];
 const SPECIAL_ATTRIBUTES = ['children','__id'];
-const svgTags = ['svg','g','rect','path','circle','line'];
+
+const svgTags = ['svg','g','rect','path','circle','line','text','tspan','image','clipPath','defs'];
 
 export class ElementFactory {
 
