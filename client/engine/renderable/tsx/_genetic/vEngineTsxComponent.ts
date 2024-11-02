@@ -24,15 +24,19 @@ export abstract class VEngineTsxComponent extends BaseTsxComponent {
         VEngineTsxRootHolder.ROOT = this;
     }
 
+    private renderImmediately() {
+        if (this.rendering) return;
+        this.rendering = true;
+        if (this.rootNativeElement!==undefined) {
+            this.rootVirtualElement = this.tsxDOMRenderer.render(this,this.rootNativeElement);
+        }
+        this.rendering = false;
+    }
+
     public override _triggerRendering():void{
         clearTimeout(this.tid);
         this.tid = setTimeout(()=>{
-            if (this.rendering) return;
-            this.rendering = true;
-            if (this.rootNativeElement!==undefined) {
-                this.rootVirtualElement = this.tsxDOMRenderer.render(this,this.rootNativeElement);
-            }
-            this.rendering = false;
+            this.renderImmediately();
             this.tid = undefined;
         },1);
     }
@@ -40,7 +44,7 @@ export abstract class VEngineTsxComponent extends BaseTsxComponent {
     public mountTo(root:IRealNode):void {
         root.removeChildren();
         this.rootNativeElement = root;
-        this._triggerRendering();
+        this.renderImmediately();
         this.onMounted();
     }
 

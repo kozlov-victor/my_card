@@ -43,7 +43,7 @@ namespace my_card.controller
         private WordUtil wordUtil = new WordUtil();
 
         [RequestAttribute(Url = "/save-session", Method = "POST")]
-        public void SaveSession(Request req, Response resp)
+        public void SaveSession(Request req)
         {
             var json = new JavaScriptSerializer().Serialize(req.BodyJSON);
             FileUtil.CreateFile("session", json);
@@ -58,9 +58,8 @@ namespace my_card.controller
         }
 
         [RequestAttribute(Url = "/save-as-template", Method = "POST")]
-        public void SaveAsTemplate(Request req, Response resp)
+        public SaveTemplateResponse SaveAsTemplate([RequestBody] SaveTemplateRequest saveTemplateRequest)
         {
-            var saveTemplateRequest = new JavaScriptSerializer().ConvertToType<SaveTemplateRequest>(req.BodyJSON);
             var list = new JavaScriptSerializer().
                 Deserialize<List<Template>>(FileUtil.ReadFile(saveTemplateRequest.extra.category, "[]"));
 
@@ -88,13 +87,11 @@ namespace my_card.controller
                     {
                         if (!saveTemplateRequest.extra.force)
                         {
-                            resp.WriteJSON(
+                            return
                                 new SaveTemplateResponse
                                 {
                                     result = "duplication"
-                                }
-                            );
-                            return;
+                                };
                         }
                         else
                         {
@@ -107,29 +104,25 @@ namespace my_card.controller
                 {
                     if (!saveTemplateRequest.extra.force)
                     {
-                        resp.WriteJSON(
+                        return
                             new SaveTemplateResponse
                             {
                                 result = "duplication"
-                            }
-                        );
-                        return;
+                            };
                     }
                     else
                     {
                         list[indexOf] = saveTemplateRequest.template;
                     }
                 }
-                resp.WriteJSON(
-                    new SaveTemplateResponse
-                    {
-                        result = "ok"
-                    }
-                );
             }
 
-
             FileUtil.CreateFile(saveTemplateRequest.extra.category, new JavaScriptSerializer().Serialize(list));
+            return
+                new SaveTemplateResponse
+                {
+                    result = "ok"
+                };
         }
 
 
@@ -146,12 +139,12 @@ namespace my_card.controller
 
 
         [RequestAttribute(Url = "/get-my-templates", Method = "POST")]
-        public void GetMyTemplates(Request req, Response resp)
+        public List<Template> GetMyTemplates(Request req, Response resp)
         {
             var category = "" + req.BodyJSON["category"];
             var json = FileUtil.ReadFile(category, "[]");
             var list = new JavaScriptSerializer().Deserialize<List<Template>>(json);
-            resp.WriteJSON(list);
+            return list;
         }
 
         [RequestAttribute(Url = "/save-print-session", Method = "POST")]

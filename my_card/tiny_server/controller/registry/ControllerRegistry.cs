@@ -3,17 +3,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Web.Script.Serialization;
 using tinyServer.request;
 using tinyServer.response;
 
 namespace tinyServer.controller
 {
 
+    class Param
+    {
+        public bool IsRequestBody;
+        public bool IsRequest;
+        public bool IsResponse;
+    }
+
     class MethodContextHolder
     {
         public MethodInfo MethodInfo;
         public object obj;
         public RequestAttribute Attr;
+        public Param[] methodParams;
     }
 
     class ControllerRegistry
@@ -51,11 +60,61 @@ namespace tinyServer.controller
                 {
                     MethodInfo = method,
                     obj = controller,
-                    Attr = attr
+                    Attr = attr,
+                    methodParams = new Param[method.GetParameters().Length]
                 };
+                int i = 0;
+                foreach(ParameterInfo parameterInfo in method.GetParameters())
+                {
+                    var p = new Param();
+                    methodContextHolder.methodParams[i] = p;
+                    if (parameterInfo.GetCustomAttribute(typeof(RequestBody)) != null)
+                    {
+                        p.IsRequestBody = true;
+                    }
+                    else if (parameterInfo.ParameterType == typeof(Request))
+                    {
+                        p.IsRequest = true;
+                    }
+                    else if (parameterInfo.ParameterType == typeof(Response))
+                    {
+                        p.IsResponse = true;
+                    }
+                    else
+                    {
+                        throw new Exception($"unknown method parameter: {parameterInfo.ParameterType}");
+                    }
+                    i++;
+                }
                 MethodList.Add(methodContextHolder);
             }
             
+        }
+
+        private object[] GetMethodParameters(MethodContextHolder m, Request request, Response response)
+        {
+            var actualParameters = new object[m.methodParams.Length];
+            for(int i=0;i<actualParameters.Length;i++)
+            {
+                var formalParameter = m.methodParams[i];
+                if (formalParameter.IsRequest)
+                {
+                    actualParameters[i] = request;
+                }
+                else if (formalParameter.IsResponse)
+                {
+                    actualParameters[i] = response;
+                }
+                else if (formalParameter.IsRequestBody)
+                {
+                    actualParameters[i] = new JavaScriptSerializer().ConvertToType<SaveTemplateRequest>(request.BodyJSON);
+                }
+                else
+                {
+                    throw new Exception($"internal error: bad argument for method: {m.MethodInfo.Name}. Smth wrong with tinyServer");
+                }
+            }
+            return actualParameters;
         }
 
         public Response TryToCallMethod(Request request) 
@@ -66,7 +125,13 @@ namespace tinyServer.controller
                     Response response = new Response();
                     try
                     {
-                        m.MethodInfo.Invoke(m.obj, new object[] { request, response });
+                        var parameters = GetMethodParameters(m, request, response);
+                        Console.WriteLine($"{parameters}");
+                        var result = m.MethodInfo.Invoke(m.obj, parameters);
+                        if (result!=null)
+                        {
+                            response.WriteJSON(result);
+                        }
                         return response;
                     }
                     catch(Exception e)

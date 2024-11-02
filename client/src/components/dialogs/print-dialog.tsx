@@ -58,13 +58,11 @@ export class PrintDialog extends BaseTsxComponent {
                         href={'/?prepareDocument&type=pdf'}>
                         Сформувати pdf
                     </a>
-                    <a
+                    <button
                         onclick={_ => this.ref.close({printType:this.printType,documentType:'word'})}
-                        target={'word'}
-                        className={'button-like'}
-                        href={'/?prepareDocument&type=word'}>
+                    >
                         Сформувати word
-                    </a>
+                    </button>
                 </Dialog>
             </>
         );

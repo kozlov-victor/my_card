@@ -101,8 +101,7 @@ namespace tinyServer.io
 
         public void ReadAndSendLocalFile(string requestUri, TcpClient client)
         {
-            // Если в строке содержится двоеточие, передадим ошибку 400
-            // Это нужно для защиты от URL типа http://example.com/../../file.txt
+            // check for urls like http://example.com/../../file.txt
             if (requestUri.IndexOf("..") >= 0)
             {
                 var response = new Response
@@ -113,7 +112,7 @@ namespace tinyServer.io
                 return;
             }
 
-            // Если строка запроса оканчивается на "/", то добавим к ней index.html
+            // if resource requested ends with "/", add index.html
             if (requestUri.EndsWith("/"))
             {
                 requestUri += "index.html";
@@ -122,7 +121,7 @@ namespace tinyServer.io
             string filePath = "./" + requestUri;
 
 
-            // Если в папке не существует данного файла, посылаем ошибку 404
+            // if file doesnot exists send 404
             if (!File.Exists(filePath))
             {
                 var response = new Response
@@ -133,13 +132,13 @@ namespace tinyServer.io
                 return;
             }
 
-            // Получаем расширение файла из строки запроса
+            // resolve file extention
             string extension = requestUri.Substring(requestUri.LastIndexOf('.'));
 
-            // Тип содержимого
+            // content type
             string contentType;
 
-            // Пытаемся определить тип содержимого по расширению файла
+            // try resolving contentType
             switch (extension)
             {
                 case ".htm":

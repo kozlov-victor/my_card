@@ -12,7 +12,7 @@ namespace my_card
     class Program
     {
         static void Main(string[] args)
-        {
+        { 
             Console.OutputEncoding = Encoding.UTF8;
             Console.WriteLine("Starting...");
             CliUi cliUi = new CliUi();

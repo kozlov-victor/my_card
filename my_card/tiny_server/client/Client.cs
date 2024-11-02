@@ -12,21 +12,20 @@ using tinyServer.server;
 
 namespace tinyServer.client
 {
-    // Класс-обработчик клиента
     class Client
     {
 
-        public Client(TcpClient client)
+        public Client(TcpClient tcpClient)
         {
 
             var io = new IO();
 
-            var req = io.ReadRequest(client);
+            var req = io.ReadRequest(tcpClient);
 
             Request request = RequestParser.Parse(req);
             Response response = Server.ControllerRegistry.TryToCallMethod(request);
-            if (response != null) io.Send(response, client);
-            else io.ReadAndSendLocalFile(request.Url, client);
+            if (response != null) io.Send(response, tcpClient);
+            else io.ReadAndSendLocalFile(request.Url, tcpClient);
         }
     }
 }

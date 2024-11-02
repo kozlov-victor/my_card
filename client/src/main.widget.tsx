@@ -65,7 +65,11 @@ export class MainWidget extends DomRootComponent {
         const html = this.htmlRenderUtil.render(form, title, opts.printType,opts.documentType);
         //console.log(html);
         await HttpClient.post('/save-print-session',{html,title});
-        TabInteractor.trigger('onPrintReady');
+        if (opts.documentType==='pdf') TabInteractor.trigger('onPrintReady');
+        else {
+            location.href =
+                `${location.protocol}//${location.hostname}:${location.port}/${opts.documentType}`;
+        }
     }
 
     render(): JSX.Element {
@@ -99,27 +103,17 @@ export class MainWidget extends DomRootComponent {
 
 export class PrintWidget extends DomRootComponent{
 
-    @Reactive.Property()
-    private title = '';
+    private readonly title;
 
     constructor() {
         super();
         this.title =
-            (window.name==='pdf' || window.name==='word')?
+            (window.name==='pdf')?
             'Готуємо документ до друку...':
             'Ця сторінка відкрита некоректно. Закрийте її та скористайтесь кнопкою "Друк"'
         TabInteractor.listen('onPrintReady',()=>{
             location.href =
                 `${location.protocol}//${location.hostname}:${location.port}/${window.name}`;
-            setTimeout(()=>{
-                this.title = 'Готово...';
-            },10_000);
-            setTimeout(()=>{
-                this.title = 'Цю сторінку можна закрити';
-            },15_000);
-            setTimeout(()=>{
-                close();
-            },25_000);
         });
     }
 

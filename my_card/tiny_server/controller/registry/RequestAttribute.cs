@@ -17,4 +17,10 @@ namespace tinyServer.controller
         
     }
 
+    [AttributeUsage(AttributeTargets.Parameter, Inherited = false)]
+    class RequestBody: Attribute
+    {
+
+    }
+
 }
